@@ -17,6 +17,8 @@ int main(int argc, char** argv) {
     solver.solve();
 
     std::cout << solver.getSolution() << std::endl;
+    std::cout << solver.getSolutionTime() << std::endl;
+    std::cout << solver.getObjectiveValue() << std::endl;
 
     return 0;
 }

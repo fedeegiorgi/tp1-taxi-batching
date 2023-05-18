@@ -1,5 +1,5 @@
 #include "greedy_solver.h"
-
+#include <chrono>
 
 GreedySolver::GreedySolver() {}
 
@@ -32,6 +32,9 @@ void GreedySolver::solve() {
     // objetivo: completar los vectores _taxi_assignment y _pax_assignment de _solution tal que
     // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j
 
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
+
     for (int j = 0; j < _solution.getN(); j++) {  // por cada pasajero en orden de columna (o sea orden de solicitud)
         int min = 9999; // infinito
         int min_index = 0;
@@ -44,8 +47,13 @@ void GreedySolver::solve() {
         }
 
         _solution.assign(min_index, j); // asignar taxi y pax j
+        _objective_value += _instance.dist[min_index][j];
     }
 
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    this->_solution_time = duration.count();
 }
 
 double GreedySolver::getObjectiveValue() const {
