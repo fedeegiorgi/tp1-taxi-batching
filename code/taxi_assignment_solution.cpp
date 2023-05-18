@@ -34,11 +34,11 @@ int TaxiAssignmentSolution::getAssignedTaxi(int pax) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const TaxiAssignmentSolution& solution) {
-    os << "paxs: ";
+    os << "taxis: ";
     for (int i = 0; i < solution.getN(); i++)
         os << solution.getAssignedPax(i) << " ";
     os << std::endl;
-    os << "taxis: ";
+    os << "paxs: ";
     for (int i = 0; i < solution.getN(); i++)
         os << solution.getAssignedTaxi(i) << " ";
     os << std::endl;

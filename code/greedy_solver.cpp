@@ -31,23 +31,25 @@ void GreedySolver::solve() {
 
     // objetivo: completar los vectores _taxi_assignment y _pax_assignment de _solution tal que
     // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j
-
+    
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    for (int j = 0; j < _solution.getN(); j++) {  // por cada pasajero en orden de columna (o sea orden de solicitud)
-        int min = 9999; // infinito
+    int n = this->_solution.getN();
+
+    for (int j = 0; j < n; j++) {  // por cada pasajero en orden de columna (o sea orden de solicitud)
+        double min = 9999; // infinito
         int min_index = 0;
 
-        for (int i = 0; i < _solution.getN(); i++) { // obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible
-            if (min > _instance.dist[i][j] && !(_solution.isTaxiAssigned(i))) {
-                min = _instance.dist[i][j];
+        for (int i = 0; i < n; i++) { // obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible
+            if (min > this->_instance.dist[i][j] && !(this->_solution.isTaxiAssigned(i))) {
+                min = this->_instance.dist[i][j];
                 min_index = i;
             }
         }
-
-        _solution.assign(min_index, j); // asignar taxi y pax j
-        _objective_value += _instance.dist[min_index][j];
+        std::cout << min_index << std::endl;
+        this->_solution.assign(min_index, j); // asignar taxi y pax j
+        this->_objective_value += this->_instance.dist[min_index][j];
     }
 
     end = std::chrono::system_clock::now();
