@@ -8,6 +8,8 @@ GreedySolver::GreedySolver(TaxiAssignmentInstance &instance) {
     this->_objective_value = 0;
     this->_solution_status = 0;
     this->_solution_time = 0;
+    this->_solution = TaxiAssignmentSolution(this->_instance.n);
+
 }
 
 void GreedySolver::setInstance(TaxiAssignmentInstance &instance) {
@@ -17,8 +19,7 @@ void GreedySolver::setInstance(TaxiAssignmentInstance &instance) {
 void GreedySolver::solve() {
     // prueba: entendiendo como funciona la calse TaxiAssignmentSolution
 
-    // crea objeto solucion con n (cant. pax y taxis) 
-    TaxiAssignmentSolution _solution = TaxiAssignmentSolution(this->_instance.n);
+    // crea objeto solucion con n (cant. pax y taxis)
 
     // tenemos para usar:
     // _solution.getN()
@@ -31,23 +32,21 @@ void GreedySolver::solve() {
     // objetivo: completar los vectores _taxi_assignment y _pax_assignment de _solution tal que
     // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j
 
-
-    // idea pseudocodigo algoritmo:
     for (int j = 0; j < _solution.getN(); j++) {  // por cada pasajero en orden de columna (o sea orden de solicitud)
-        int auto_a_asignar = getMinDist(j); // obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible
-        _solution.assign[auto_a_asignar, j]; // asignar taxi y pax j
+        int min = 9999; // infinito
+        int min_index = 0;
+
+        for (int i = 0; i < _solution.getN(); i++) { // obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible
+            if (min > _instance.dist[i][j] && !(_solution.isTaxiAssigned(i))) {
+                min = _instance.dist[i][j];
+                min_index = i;
+            }
+        }
+
+        _solution.assign(min_index, j); // asignar taxi y pax j
     }
 
 }
-
-// ni idea si es la idea hacer una func auxiliar, supongo q no hay problema
-// int getMinDist(int j) {
-    // recorre la columna j
-        // if min > _instance.dist[i][j] && !(_solution.isTaxiAssigned[i]) // si la dist es menor y ese taxi ya no fue asignado
-        //     min = i
-
-    // return i
-// }
 
 double GreedySolver::getObjectiveValue() const {
     return this->_objective_value;
