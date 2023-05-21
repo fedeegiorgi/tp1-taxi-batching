@@ -27,18 +27,18 @@ class BatchingSolver
 	
 	private:
         // Completar con lo que sea necesario.
-        const std::vector<int> _start_nodes;
-        const std::vector<int> _end_nodes;
-        const std::vector<int> _capacities;
-        const std::vector<int> _unit_costs;
-        const int _source;
-        const int _sink;
-        const std::vector<int> _supplies;
+        std::vector<int> _start_nodes;
+        std::vector<int> _end_nodes;
+        std::vector<int> _capacities;
+        std::vector<int> _unit_costs;
+        int _source;
+        int _sink;
+        std::vector<int> _supplies;
 
         std::vector<int> set_start_nodes(int n) const;
         std::vector<int> set_end_nodes(int n) const;
         std::vector<int> set_capacities(int n);
-        std::vector<double> set_costs(std::vector<std::vector<double>> matrix, int n) const;
+        std::vector<int> set_costs(std::vector<std::vector<double>> matrix, int n) const;
 
         // Instance, problem and results attributes
         TaxiAssignmentInstance _instance;

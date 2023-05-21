@@ -39,6 +39,26 @@ void BatchingSolver::solve() {
 
     this->_objective_value = min_cost_flow.OptimalCost();
     this->_solution_status = min_cost_flow.Solve();
+
+    if (status == MinCostFlow::OPTIMAL) {
+    LOG(INFO) << "Total cost: " << min_cost_flow.OptimalCost();
+    LOG(INFO) << "";
+    for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
+        // Can ignore arcs leading out of source or into sink.
+        if (min_cost_flow.Tail(i) != source && min_cost_flow.Head(i) != sink) {
+            // Arcs in the solution have a flow value of 1. Their start and end
+            // nodes give an assignment of worker to task.
+            if (min_cost_flow.Flow(i) > 0) {
+                LOG(INFO) << "Worker " << min_cost_flow.Tail(i)
+                        << " assigned to task " << min_cost_flow.Head(i)
+                        << " Cost: " << min_cost_flow.UnitCost(i);
+            }
+        }
+    }
+    } else {
+        LOG(INFO) << "Solving the min cost flow problem failed.";
+        LOG(INFO) << "Solver status: " << status;
+    }
 }
 
 double BatchingSolver::getObjectiveValue() const {
@@ -110,12 +130,14 @@ std::vector<int> set_capacities(int n) const {
     return ret;
 }
 
+
+// hay que multiplicar por 10 para q sean enteros
 std::vector<double> set_costs(std::vector<std::vector<double>> matrix, int n) const {
     std::vector<double> flattened = std::vector<double>(n, 0);
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
-            flattened.push_back(matrix[fila][index]);
+            flattened.push_back(matrix[fila][index]*10);
         }
     }
     for (int j = 0; j < n; j++){
