@@ -24,7 +24,21 @@ void BatchingSolver::setInstance(TaxiAssignmentInstance &instance) {
 }
 
 void BatchingSolver::solve() {
+    // Instantiate a SimpleMinCostFlow solver.
+    SimpleMinCostFlow min_cost_flow;
 
+    // Add each arc.
+    for (int i = 0; i < this->_start_nodes.size(); ++i) {
+        int arc = min_cost_flow.AddArcWithCapacityAndUnitCost(this->_start_nodes[i], this->_end_nodes[i], this->_capacities[i], this->_unit_costs[i]);
+    }
+
+    // Add node supplies.
+    for (int i = 0; i < this->_supplies.size(); ++i) {
+        min_cost_flow.SetNodeSupply(i, this->_supplies[i]);
+    }
+
+    this->_objective_value = min_cost_flow.OptimalCost();
+    this->_solution_status = min_cost_flow.Solve();
 }
 
 double BatchingSolver::getObjectiveValue() const {
