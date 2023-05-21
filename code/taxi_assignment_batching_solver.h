@@ -1,5 +1,5 @@
-#ifndef TAXI_ASSIGNMENT_MIN_COST_FLOW_SOLVER_H
-#define TAXI_ASSIGNMENT_MIN_COST_FLOW_SOLVER_H
+#ifndef TAXI_ASSIGNMENT_BATCHING_SOLVER_H
+#define TAXI_ASSIGNMENT_BATCHING_SOLVER_H
 
 #include <cstdint>
 #include <vector>
@@ -9,11 +9,11 @@
 #include "ortools/graph/min_cost_flow.h"
 
 
-class MinCostFlowSolver
+class BatchingSolver
 {
 	public:
-        MinCostFlowSolver();
-        MinCostFlowSolver(TaxiAssignmentInstance &instance);
+        BatchingSolver();
+        BatchingSolver(TaxiAssignmentInstance &instance);
 
         void setInstance(TaxiAssignmentInstance &instance);
         void solve();
@@ -26,11 +26,8 @@ class MinCostFlowSolver
         
 	
 	private:
-        // Solver atributes.
-        operations_research::SimpleMinCostFlow _min_cost_flow;
-        
-        void _createMinCostFlowNetwork();
-        void _createSolutionInfo();
+        // Completar con lo que sea necesario.
+ 
 
         // Instance, problem and results attributes
         TaxiAssignmentInstance _instance;
