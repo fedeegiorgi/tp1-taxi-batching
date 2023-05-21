@@ -15,6 +15,13 @@ std::vector<double> flatten_matrix(std::vector<std::vector<double>> matrix, int 
     return flattened;
 }
 
+std::vector<int> set_supplies(int n){
+    std::vector<int> supplies = std::vector<int>((n+2), 0);
+    supplies[0] = n;
+    supplies[n+1] = -n;
+    return supplies;
+}
+
 template<typename T>
 void print_vector(const std::vector<T>& vec) {
     std::cout << "[";
@@ -39,5 +46,7 @@ int main(){
                                                 {3.9,2.3,2.4,1.3,3.5,5.8,1.4,1.5,3.8,4.8},
                                                 {3.7,4.8,5.8,4.6,6.9,9.2,3.5,4.3,4.2,8.2}};
     std::vector<double> flattened = flatten_matrix(matrix, 10);
+    std::vector<int> supplies = set_supplies(10);
     print_vector(flattened);
+    print_vector(supplies);
 }
