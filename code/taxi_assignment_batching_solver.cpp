@@ -8,6 +8,7 @@ BatchingSolver::BatchingSolver(TaxiAssignmentInstance &instance) {
     this->_objective_value = 0;
     this->_solution_status = 0;
     this->_solution_time = 0;
+    this->_solution = TaxiAssignmentSolution(this->_instance.n);
 
     this->_start_nodes = set_start_nodes(instance.n);
     this->_end_nodes = set_end_nodes(instance.n);
@@ -42,13 +43,18 @@ void BatchingSolver::solve() {
 
     // prints de chequeo
 
-    std::cout << this->_start_nodes.size() << std::endl;
-    std::cout << this->_end_nodes.size() << std::endl;
-    std::cout << this->_capacities.size() << std::endl;
-    std::cout << this->_unit_costs.size() << std::endl;
+    // std::cout << this->_start_nodes.size() << std::endl;
+    // std::cout << this->_end_nodes.size() << std::endl;
+    // std::cout << this->_capacities.size() << std::endl;
+    // std::cout << this->_unit_costs.size() << std::endl;
+
+    // printVector(_start_nodes);
+    // printVector(_end_nodes);
+    // printVector(_capacities);
+    // printVector(_unit_costs);
 
     if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
-        LOG(INFO) << "Total cost: " << min_cost_flow.OptimalCost();
+        LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
         LOG(INFO) << "";
         for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
             // Can ignore arcs leading out of source or into sink.
@@ -56,9 +62,34 @@ void BatchingSolver::solve() {
                 // Arcs in the solution have a flow value of 1. Their start and end
                 // nodes give an assignment of worker to task.
                 if (min_cost_flow.Flow(i) > 0) {
-                    LOG(INFO) << "Worker " << min_cost_flow.Tail(i)
-                            << " assigned to task " << min_cost_flow.Head(i)
-                            << " Cost: " << min_cost_flow.UnitCost(i);
+                    // std::cout << i << std::endl;
+                    LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
+                            << " asignado a pax " << min_cost_flow.Head(i) - 10
+                            << " Costo: " << min_cost_flow.UnitCost(i);
+                }
+            }
+        }
+    } else {
+        LOG(INFO) << "Solving the min cost flow problem failed.";
+        LOG(INFO) << "Solver status: " << this->_solution_status;
+    }
+
+    if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
+        LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
+        LOG(INFO) << "";
+        for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
+            // Can ignore arcs leading out of source or into sink.
+            if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
+                // Arcs in the solution have a flow value of 1. Their start and end
+                // nodes give an assignment of worker to task.
+                if (min_cost_flow.Flow(i) > 0) {
+                    std::cout << i << std::endl;
+                    LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
+                            // es n no 10!!
+                            << " asignado a pax " << min_cost_flow.Head(i) - 10
+                            << " Costo: " << min_cost_flow.UnitCost(i);
+                    this->_solution.assign(int(min_cost_flow.Tail(i)), int(min_cost_flow.Head(i) - 10));
+                    std::cout << "pase" << std::endl;
                 }
             }
         }
@@ -116,7 +147,7 @@ std::vector<int64_t> BatchingSolver::set_end_nodes(int n) {
 
     for(int i = n+1; i < 2*n+1; i++){
         for(int j = 0; j < n; j++)
-            ret.push_back(i);
+            ret.push_back(n+1+j);
     }
 
     for(int i = 0; i < n; i++){
@@ -154,8 +185,22 @@ std::vector<int64_t> BatchingSolver::set_costs(std::vector<std::vector<double>> 
 }
 
 std::vector<int64_t> BatchingSolver::set_supplies(int n) {
-    std::vector<int64_t> supplies = std::vector<int64_t>((n+2), 0);
+    std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
     supplies[0] = n;
-    supplies[n+1] = -n;
+    // for (int64_t i = 1; i <= n; i++){
+    //     supplies[i] = 1;
+    // }
+    supplies[2*n+1] = -n;
     return supplies;
+}
+
+void BatchingSolver::printVector(const std::vector<int64_t>& vec) {
+    std::cout << "[";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        std::cout << vec[i];
+        if (i != vec.size() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]" << std::endl;
 }

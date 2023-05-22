@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
 
     BatchingSolver solver_2(instance);
     solver_2.solve();
+    std::cout << solver_2.getSolution() << std::endl;
 
     return 0;
 }

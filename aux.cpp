@@ -15,11 +15,34 @@ std::vector<double> flatten_matrix(std::vector<std::vector<double>> matrix, int 
     return flattened;
 }
 
-std::vector<int> set_supplies(int n){
-    std::vector<int> supplies = std::vector<int>((n+2), 0);
+std::vector<int64_t> set_supplies(int n){
+    std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), -1);
     supplies[0] = n;
-    supplies[n+1] = -n;
+    for (int64_t i = 1; i <= n; i++){
+        supplies[i] = 1;
+    }
+    supplies[2*n+1] = -n;
     return supplies;
+}
+
+std::vector<int64_t> set_end_nodes(int n) {
+    std::vector<int64_t> ret;
+
+    for(int i = 1; i < n+1; i++){
+        ret.push_back(i);
+    }
+
+    for(int i = n+1; i < 2*n+1; i++){
+        for(int j = 0; j < n; j++)
+            ret.push_back(n+1+j);
+
+
+    for(int i = 0; i < n; i++){
+        ret.push_back(21);
+    }
+
+    return ret;
+
 }
 
 template<typename T>
@@ -46,7 +69,7 @@ int main(){
                                                 {3.9,2.3,2.4,1.3,3.5,5.8,1.4,1.5,3.8,4.8},
                                                 {3.7,4.8,5.8,4.6,6.9,9.2,3.5,4.3,4.2,8.2}};
     std::vector<double> flattened = flatten_matrix(matrix, 10);
-    std::vector<int> supplies = set_supplies(10);
+    std::vector<int64_t> supplies = set_supplies(10);
     print_vector(flattened);
     print_vector(supplies);
 }

@@ -22,6 +22,9 @@ class BatchingSolver
         TaxiAssignmentSolution getSolution() const;
         int getSolutionStatus() const;
         double getSolutionTime() const;
+
+
+        void printVector(const std::vector<int64_t>& vec);
         
         
 	
