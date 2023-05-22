@@ -36,7 +36,6 @@ void GreedySolver::solve() {
                 min_index = i;
             }
         }
-        std::cout << min_index << std::endl;
         this->_solution.assign(min_index, j); // asignar taxi y pax j
         this->_objective_value += this->_instance.dist[min_index][j];
     }

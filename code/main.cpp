@@ -6,12 +6,11 @@
 
 
 int main(int argc, char** argv) {
-    std::string filename = "input/small_1.csv";
+
+    std::string filename = "input/xl_3.csv";
 
     TaxiAssignmentInstance instance(filename);
     std::cout << filename << std::endl;
-
-    TaxiAssignmentSolution solution(instance.n);
 
     GreedySolver solver(instance);
 
@@ -21,9 +20,15 @@ int main(int argc, char** argv) {
     std::cout << solver.getSolutionTime() << std::endl;
     std::cout << solver.getObjectiveValue() << std::endl;
 
+    std::cout << "" << std::endl;
+
     BatchingSolver solver_2(instance);
+
     solver_2.solve();
+
     std::cout << solver_2.getSolution() << std::endl;
+    std::cout << solver_2.getObjectiveValue() / 10.0 << std::endl;
+    std::cout << solver_2.getSolutionTime() << std::endl;
 
     return 0;
 }

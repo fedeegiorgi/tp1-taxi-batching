@@ -13,8 +13,8 @@ int TaxiAssignmentSolution::getN() const {
 }
 
 void TaxiAssignmentSolution::assign(int taxi, int pax) {
-    this->_taxi_assignment[taxi] = pax;
-    this->_pax_assignment[pax] = taxi;
+    this->_taxi_assignment[taxi] = pax+1; // +1 para q los taxis y pax empiecen en 1 y no 0
+    this->_pax_assignment[pax] = taxi+1;
 }
 
 bool TaxiAssignmentSolution::isTaxiAssigned(int taxi) const {
@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& os, const TaxiAssignmentSolution& solutio
     os << std::endl;
     os << "taxi \t --> \t pax" << std::endl;
     for (int i = 0; i < solution.getN(); i++) {
-        os << i << " \t --> \t" << solution.getAssignedPax(i) << std::endl;
+        os << i+1 << " \t --> \t" << solution.getAssignedPax(i) << std::endl; // +i para q los taxis y pax empiecen en 1 y no 0
     }
 
     return os;

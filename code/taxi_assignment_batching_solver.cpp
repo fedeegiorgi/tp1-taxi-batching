@@ -18,9 +18,13 @@ void BatchingSolver::setInstance(TaxiAssignmentInstance &instance) {
 
 void BatchingSolver::solve() {
 
+    // Inicializamos timer.
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
+
     this->_solution_status = this->_min_cost_flow.Solve();
     this->_objective_value = this->_min_cost_flow.OptimalCost();
-
+    
     if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
         for (std::size_t i = 0; i < this->_min_cost_flow.NumArcs(); ++i) {
             // Can ignore arcs leading out of source or into sink.
@@ -28,7 +32,7 @@ void BatchingSolver::solve() {
                 // Arcs in the solution have a flow value of 1. Their start and end
                 // nodes give an assignment of worker to task.
                 if (this->_min_cost_flow.Flow(i) > 0) {
-                    this->_solution.assign(int(this->_min_cost_flow.Tail(i)), int(this->_min_cost_flow.Head(i) - this->_solution.getN()));
+                    this->_solution.assign(this->_min_cost_flow.Tail(i)-1, this->_min_cost_flow.Head(i) - this->_solution.getN()-1);
                 }
             }
         }
@@ -36,6 +40,12 @@ void BatchingSolver::solve() {
         LOG(INFO) << "Solving the min cost flow problem failed.";
         LOG(INFO) << "Solver status: " << this->_solution_status;
     }
+
+    // Frenamos timer.
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    
+    this->_solution_time = duration.count();
 
     // prints de chequeo
 
@@ -125,7 +135,7 @@ std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
     }
 
     for(int i = 0; i < n; i++){
-        ret.push_back(21);
+        ret.push_back(2*n+1);
     }
 
     return ret;
