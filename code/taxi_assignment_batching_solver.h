@@ -23,26 +23,29 @@ class BatchingSolver
         int getSolutionStatus() const;
         double getSolutionTime() const;
 
-
+        // Para debuggear
         void printVector(const std::vector<int64_t>& vec);
         
-        
-	
 	private:
-        // Completar con lo que sea necesario.
+        // Estructuras de datos para el grafo
         std::vector<int64_t> _start_nodes;
         std::vector<int64_t> _end_nodes;
         std::vector<int64_t> _capacities;
         std::vector<int64_t> _unit_costs;
+        std::vector<int64_t> _supplies;
         int64_t _source;
         int64_t _sink;
-        std::vector<int64_t> _supplies;
-
-        std::vector<int64_t> set_start_nodes(int n);
-        std::vector<int64_t> set_end_nodes(int n);
-        std::vector<int64_t> set_capacities(int n);
-        std::vector<int64_t> set_costs(std::vector<std::vector<double>> matrix, int n);
-        std::vector<int64_t> set_supplies(int n);
+        
+        // Interfaz para la solucion del problema costo mínimo flujo máximo
+        void _create_network(TaxiAssignmentInstance &instance);
+        operations_research::SimpleMinCostFlow _min_cost_flow;
+        
+        // Métodos para la conformación del grafo para la solución
+        std::vector<int64_t> _set_start_nodes(int n);
+        std::vector<int64_t> _set_end_nodes(int n);
+        std::vector<int64_t> _set_capacities(int n);
+        std::vector<int64_t> _set_costs(std::vector<std::vector<double>> matrix, int n);
+        std::vector<int64_t> _set_supplies(int n);
 
         // Instance, problem and results attributes
         TaxiAssignmentInstance _instance;

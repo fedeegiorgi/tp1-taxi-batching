@@ -1,6 +1,5 @@
 #include "taxi_assignment_batching_solver.h"
 
-
 BatchingSolver::BatchingSolver() {}
 
 BatchingSolver::BatchingSolver(TaxiAssignmentInstance &instance) {
@@ -10,16 +9,7 @@ BatchingSolver::BatchingSolver(TaxiAssignmentInstance &instance) {
     this->_solution_time = 0;
     this->_solution = TaxiAssignmentSolution(this->_instance.n);
 
-    // habría que crear una función que sea sólo crear grafo --> los arcos
-    // los estamos armando en el solver y no tiene mucho sentido
-    this->_start_nodes = set_start_nodes(instance.n);
-    this->_end_nodes = set_end_nodes(instance.n);
-    this->_capacities = set_capacities(instance.n);
-    this->_unit_costs = set_costs(instance.dist, instance.n);
-
-    this->_source = 0;
-    this->_sink = 2 * instance.n + 1;
-    this->_supplies = set_supplies(instance.n);
+    _create_network(instance);
 }
 
 void BatchingSolver::setInstance(TaxiAssignmentInstance &instance) {
@@ -27,21 +17,25 @@ void BatchingSolver::setInstance(TaxiAssignmentInstance &instance) {
 }
 
 void BatchingSolver::solve() {
-    // Instantiate a SimpleMinCostFlow solver.
-    operations_research::SimpleMinCostFlow min_cost_flow;
 
-    // Add each arc.
-    for (int i = 0; i < this->_start_nodes.size(); ++i) {
-        int arc = min_cost_flow.AddArcWithCapacityAndUnitCost(this->_start_nodes[i], this->_end_nodes[i], this->_capacities[i], this->_unit_costs[i]);
+    this->_solution_status = this->_min_cost_flow.Solve();
+    this->_objective_value = this->_min_cost_flow.OptimalCost();
+
+    if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
+        for (std::size_t i = 0; i < this->_min_cost_flow.NumArcs(); ++i) {
+            // Can ignore arcs leading out of source or into sink.
+            if (this->_min_cost_flow.Tail(i) != this->_source && this->_min_cost_flow.Head(i) != this->_sink) {
+                // Arcs in the solution have a flow value of 1. Their start and end
+                // nodes give an assignment of worker to task.
+                if (this->_min_cost_flow.Flow(i) > 0) {
+                    this->_solution.assign(int(this->_min_cost_flow.Tail(i)), int(this->_min_cost_flow.Head(i) - this->_solution.getN()));
+                }
+            }
+        }
+    } else {
+        LOG(INFO) << "Solving the min cost flow problem failed.";
+        LOG(INFO) << "Solver status: " << this->_solution_status;
     }
-
-    // Add node supplies.
-    for (int i = 0; i < this->_supplies.size(); ++i) {
-        min_cost_flow.SetNodeSupply(i, this->_supplies[i]);
-    }
-
-    this->_solution_status = min_cost_flow.Solve();
-    this->_objective_value = min_cost_flow.OptimalCost();
 
     // prints de chequeo
 
@@ -54,43 +48,6 @@ void BatchingSolver::solve() {
     // printVector(_end_nodes);
     // printVector(_capacities);
     // printVector(_unit_costs);
-
-    // if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
-    //     LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
-    //     LOG(INFO) << "";
-    //     for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
-    //         // Can ignore arcs leading out of source or into sink.
-    //         if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
-    //             // Arcs in the solution have a flow value of 1. Their start and end
-    //             // nodes give an assignment of worker to task.
-    //             if (min_cost_flow.Flow(i) > 0) {
-    //                 // std::cout << i << std::endl;
-    //                 LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
-    //                         << " asignado a pax " << min_cost_flow.Head(i) - 10
-    //                         << " Costo: " << min_cost_flow.UnitCost(i);
-    //             }
-    //         }
-    //     }
-    // } else {
-    //     LOG(INFO) << "Solving the min cost flow problem failed.";
-    //     LOG(INFO) << "Solver status: " << this->_solution_status;
-    // }
-
-    if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
-        for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
-            // Can ignore arcs leading out of source or into sink.
-            if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
-                // Arcs in the solution have a flow value of 1. Their start and end
-                // nodes give an assignment of worker to task.
-                if (min_cost_flow.Flow(i) > 0) {
-                    this->_solution.assign(int(min_cost_flow.Tail(i)), int(min_cost_flow.Head(i) - this->_solution.getN()));
-                }
-            }
-        }
-    } else {
-        LOG(INFO) << "Solving the min cost flow problem failed.";
-        LOG(INFO) << "Solver status: " << this->_solution_status;
-    }
 }
 
 double BatchingSolver::getObjectiveValue() const {
@@ -109,7 +66,30 @@ double BatchingSolver::getSolutionTime() const {
     return this->_solution_time;
 }
 
-std::vector<int64_t> BatchingSolver::set_start_nodes(int n) {
+void BatchingSolver::_create_network(TaxiAssignmentInstance &instance) {
+    int n = instance.n;
+    
+    this->_start_nodes = _set_start_nodes(instance.n);
+    this->_end_nodes = _set_end_nodes(instance.n);
+    this->_capacities = _set_capacities(instance.n);
+    this->_unit_costs = _set_costs(instance.dist, instance.n);
+
+    this->_source = 0;
+    this->_sink = 2 * instance.n + 1;
+    this->_supplies = _set_supplies(instance.n);
+
+    // Add each arc.
+    for (int i = 0; i < this->_start_nodes.size(); ++i) {
+        int arc = this->_min_cost_flow.AddArcWithCapacityAndUnitCost(this->_start_nodes[i], this->_end_nodes[i], this->_capacities[i], this->_unit_costs[i]);
+    }
+
+    // Add node supplies.
+    for (int i = 0; i < this->_supplies.size(); ++i) {
+        this->_min_cost_flow.SetNodeSupply(i, this->_supplies[i]);
+    }
+}
+
+std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
     std::vector<int64_t> ret;
     
     // seteo 0s para arcos de source a taxis
@@ -132,7 +112,7 @@ std::vector<int64_t> BatchingSolver::set_start_nodes(int n) {
     return ret;
 }
 
-std::vector<int64_t> BatchingSolver::set_end_nodes(int n) {
+std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
     std::vector<int64_t> ret;
 
     for(int i = 1; i < n+1; i++){
@@ -149,10 +129,9 @@ std::vector<int64_t> BatchingSolver::set_end_nodes(int n) {
     }
 
     return ret;
-
 }
 
-std::vector<int64_t> BatchingSolver::set_capacities(int n) {
+std::vector<int64_t> BatchingSolver::_set_capacities(int n) {
     std::vector<int64_t> ret;
 
     for (int i = 0; i < (2*n+n*n); i++){
@@ -162,14 +141,12 @@ std::vector<int64_t> BatchingSolver::set_capacities(int n) {
     return ret;
 }
 
-
-// hay que multiplicar por 10 para q sean enteros
-std::vector<int64_t> BatchingSolver::set_costs(std::vector<std::vector<double>> matrix, int n) {
+std::vector<int64_t> BatchingSolver::_set_costs(std::vector<std::vector<double>> matrix, int n) {
     std::vector<int64_t> flattened = std::vector<int64_t>(n, 0);
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
-            flattened.push_back(matrix[fila][index]*10);
+            flattened.push_back(matrix[fila][index]*10); // multiplicación por 10 para que sea entero
         }
     }
     for (int j = 0; j < n; j++){
@@ -178,16 +155,16 @@ std::vector<int64_t> BatchingSolver::set_costs(std::vector<std::vector<double>> 
     return flattened;
 }
 
-std::vector<int64_t> BatchingSolver::set_supplies(int n) {
+std::vector<int64_t> BatchingSolver::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
+
     supplies[0] = n;
-    // for (int64_t i = 1; i <= n; i++){
-    //     supplies[i] = 1;
-    // }
     supplies[2*n+1] = -n;
+
     return supplies;
 }
 
+// para debugging --------------------------------------------------------------------------------------
 void BatchingSolver::printVector(const std::vector<int64_t>& vec) {
     std::cout << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
