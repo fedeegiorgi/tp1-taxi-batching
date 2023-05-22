@@ -10,6 +10,8 @@ BatchingSolver::BatchingSolver(TaxiAssignmentInstance &instance) {
     this->_solution_time = 0;
     this->_solution = TaxiAssignmentSolution(this->_instance.n);
 
+    // habría que crear una función que sea sólo crear grafo --> los arcos
+    // los estamos armando en el solver y no tiene mucho sentido
     this->_start_nodes = set_start_nodes(instance.n);
     this->_end_nodes = set_end_nodes(instance.n);
     this->_capacities = set_capacities(instance.n);
@@ -53,43 +55,35 @@ void BatchingSolver::solve() {
     // printVector(_capacities);
     // printVector(_unit_costs);
 
-    if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
-        LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
-        LOG(INFO) << "";
-        for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
-            // Can ignore arcs leading out of source or into sink.
-            if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
-                // Arcs in the solution have a flow value of 1. Their start and end
-                // nodes give an assignment of worker to task.
-                if (min_cost_flow.Flow(i) > 0) {
-                    // std::cout << i << std::endl;
-                    LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
-                            << " asignado a pax " << min_cost_flow.Head(i) - 10
-                            << " Costo: " << min_cost_flow.UnitCost(i);
-                }
-            }
-        }
-    } else {
-        LOG(INFO) << "Solving the min cost flow problem failed.";
-        LOG(INFO) << "Solver status: " << this->_solution_status;
-    }
+    // if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
+    //     LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
+    //     LOG(INFO) << "";
+    //     for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
+    //         // Can ignore arcs leading out of source or into sink.
+    //         if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
+    //             // Arcs in the solution have a flow value of 1. Their start and end
+    //             // nodes give an assignment of worker to task.
+    //             if (min_cost_flow.Flow(i) > 0) {
+    //                 // std::cout << i << std::endl;
+    //                 LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
+    //                         << " asignado a pax " << min_cost_flow.Head(i) - 10
+    //                         << " Costo: " << min_cost_flow.UnitCost(i);
+    //             }
+    //         }
+    //     }
+    // } else {
+    //     LOG(INFO) << "Solving the min cost flow problem failed.";
+    //     LOG(INFO) << "Solver status: " << this->_solution_status;
+    // }
 
     if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
-        LOG(INFO) << "Costo total: " << min_cost_flow.OptimalCost();
-        LOG(INFO) << "";
         for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i) {
             // Can ignore arcs leading out of source or into sink.
             if (min_cost_flow.Tail(i) != this->_source && min_cost_flow.Head(i) != this->_sink) {
                 // Arcs in the solution have a flow value of 1. Their start and end
                 // nodes give an assignment of worker to task.
                 if (min_cost_flow.Flow(i) > 0) {
-                    std::cout << i << std::endl;
-                    LOG(INFO) << "Taxi " << min_cost_flow.Tail(i)
-                            // es n no 10!!
-                            << " asignado a pax " << min_cost_flow.Head(i) - 10
-                            << " Costo: " << min_cost_flow.UnitCost(i);
-                    this->_solution.assign(int(min_cost_flow.Tail(i)), int(min_cost_flow.Head(i) - 10));
-                    std::cout << "pase" << std::endl;
+                    this->_solution.assign(int(min_cost_flow.Tail(i)), int(min_cost_flow.Head(i) - this->_solution.getN()));
                 }
             }
         }
