@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     std::cout << solver.getObjectiveValue() << std::endl;
 
     BatchingSolver solver_2(instance);
-    solver_2.solve()
+    solver_2.solve();
 
     return 0;
 }
