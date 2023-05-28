@@ -15,15 +15,44 @@ Datos:
 	- Destino del viaje o la distancia estimada del recorrido.
 	- Estimación de la tarifa a cobrar por el viaje.
 - Para cada conductor disponible para realizar un viaje podemos asumir que tenemos su localizacion en tiempo real.
-- Combinando ambas podemos asumir entonces que tenemos la distancia que llevaria a cada vehiculo llegar a un potencial pasajero para comenzar el viaje.
+- Combinando ambas podemos asumir entonces que tenemos la distancia que llevaria a cada vehículo llegar a un potencial pasajero para comenzar el viaje.
 
 Simplificaciones al problema:
-- Asumimos que la oferta y la demanda esta balanceada es decir, hay misma cantidad de pasajeros que de vehiculos.
+- Asumimos que la oferta y la demanda esta balanceada es decir, hay misma cantidad de pasajeros que de vehículos.
 - Asumimos que los pasajeros se encuentran ordenados de manera creciente segun el instante en el que realizan el pedido.
 - Asumimos que ningun pasajero tiene prioridad sobre otro.
 - Asumimos que no es necesario lograr una distribucion razonable de viajes a lo largo del día entre los distintos conductores.
 
 ### Estrategia FCFS
+
+El problema puede ser resuelto desde distintos enfoques. El que actualmente utiliza la empresa que nos contrata es una idea muy natural que se basa en atender a los pasajeros por orden de llegada y para cada uno de ellos tomar la mejor decisión posible en el momento.
+
+En otras palabras, utiliza el criterio de “First Come, First Served” y toma una decisión greedy para asignar el vehículo más cercano al pasajero que está siendo atendido en el momento (la mejor decisión local, que puede ser distinta a la mejor decisión global). 
+
+Podemos dividir esta estrategia en los siguientes pasos:
+1. Considerar a los pasajeros por orden de llegada.
+2. Asignar al pasajero que llegó primero el vehículo más cercano.
+3. Remover este vehículo de los posibles a asignar (para que no haya un vehículo asignado a dos pasajeros) y remover al pasajero de la lista.
+4. Repetir hasta que no haya más pasajeros.
+
+### Implementación para estrategia FCFS
+
+Como parte del trabajo como consultores para la plataforma de intermediación de movilidad nos proponemos en primer lugar analizar la estrategia actual de la empresa para poder contar con resultados de rendimiento con los cuáles comparar las nuevas propuestas a la resolución del problema.
+
+Para ello, siguiendo la idea de la estrategia explicada, realizamos una implementación de la misma en C++ que toma los datos de la distancia entre vehículos y pasajeros (en orden de llegada) en forma de una matriz y la recorre para asignarle a cada pasajero el vehículo disponible más cercano a su posición (*ver GreedySolver.cpp*).
+
+Esta estrategia e implementación es totalmente válida. Sin embargo, si hay una cantidad de demanda significativa, es posible tomar otro enfoque, en el que en lugar de ir atendiendo por orden de llegada en tiempo real, se espera cierta cantidad de tiempo (algunos segundos) y se agrupa a los pasajeros que hayan pedido un viaje en ese lapso de tiempo, para luego tomar una decisión de asignación de vehículos sabiendo las localizaciones de todos. A esto se lo llama estrategia de "batching."
+
+### Estrategia de Batching
+
+Llamamos a ese grupo de clientes que pide el viaje en el lapso de tiempo en el que estamos esperando "batch", de ahí el nombre batching.
+
+Nuestro objetivo es de alguna manera realizar una asignación de vehículos a pasajeros de forma tal que la suma de las distancias recorridas de los vehículos para recoger a los pasajeros sea mínima.
+
+Notar que es posible que en algun momento elijamos un vehículo que no es el mas cercano a un pasajero, porque al final termina siendo mejor para minimizar la suma de distancias, por lo que esta estrategia es totalmente distinta a la estrategia *greedy* vista anteriormente.
+
+Para realizar esta asignación vamos a modelar el problema con grafos.
+
 ### Modelo para estrategia de Batching
 
 Realizamos el siguiente modelo:
