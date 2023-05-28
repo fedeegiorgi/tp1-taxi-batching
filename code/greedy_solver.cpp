@@ -8,8 +8,9 @@ GreedySolver::GreedySolver(TaxiAssignmentInstance &instance) {
     this->_objective_value = 0;
     this->_solution_status = 0;
     this->_solution_time = 0;
-    this->_solution = TaxiAssignmentSolution(this->_instance.n);
-
+    
+    // Inicializamos un objeto soluciòn que luego serà modificado por el mètodo "solve" al momento de resolver el problema para la instancia dada.
+    this->_solution = TaxiAssignmentSolution(this->_instance.n); 
 }
 
 void GreedySolver::setInstance(TaxiAssignmentInstance &instance) {
@@ -17,34 +18,34 @@ void GreedySolver::setInstance(TaxiAssignmentInstance &instance) {
 }
 
 void GreedySolver::solve() {
-    // objetivo: completar los vectores _taxi_assignment y _pax_assignment de _solution tal que
-    // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j
+    // Objetivo: completar los vectores _taxi_assignment y _pax_assignment de _solution tal que:
+    // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j.
     
     // Inicializamos timer.
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    int n = this->_solution.getN();
+    int n = this->_solution.getN(); // n = cantidad de pasajeros = cantidad de taxis.
 
-    for (int j = 0; j < n; j++) {  // por cada pasajero en orden de columna (o sea orden de solicitud)
-        double min = 9999; // infinito
+    for (int j = 0; j < n; j++) {  // Por cada pasajero en orden de columna (o sea orden de solicitud).
+        double min = 9999; // Infinito.
         int min_index = 0;
 
-        for (int i = 0; i < n; i++) { // obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible
+        for (int i = 0; i < n; i++) { // Obtener de la columna j (pax), la posición i (auto) disponible con menos distancia posible.
             if (min > this->_instance.dist[i][j] && !(this->_solution.isTaxiAssigned(i))) {
                 min = this->_instance.dist[i][j];
                 min_index = i;
             }
         }
-        this->_solution.assign(min_index, j); // asignar taxi y pax j
-        this->_objective_value += this->_instance.dist[min_index][j];
+        this->_solution.assign(min_index, j); // Asignar taxi i al pax j.
+        this->_objective_value += this->_instance.dist[min_index][j]; // Sumamos al valor objetivo que es la distancia total, la distancia de el taxi seleccionado al pasajero.
     }
 
     // Frenamos timer.
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> duration = end - start;
     
-    this->_solution_time = duration.count();
+    this->_solution_time = duration.count(); // Asignamos al tiempo que tardamos en dar la solución lo que nos marca el timer.
 }
 
 double GreedySolver::getObjectiveValue() const {
