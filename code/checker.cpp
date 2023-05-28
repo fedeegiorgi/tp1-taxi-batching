@@ -12,7 +12,7 @@ double TaxiAssignmentChecker::getSolutionCost(const TaxiAssignmentInstance &inst
     double ret = 0.0;
     
     for (int i = 0; i < instance.n; i++) {
-        int j = solution.getAssignedPax(i)-1; // -1 pq estan numerados del 1 al 10 para q no se confunda en batching con 0 que es el nodo source
+        int j = solution.getAssignedPax(i)-1; // -1 pues estan numerados del 1 al 10 para que no se confunda en batching con 0 que es el nodo source.
         double rendm_km = instance.pax_tot_fare[j] / (instance.pax_trip_dist[j] + instance.dist[i][j]);
         ret += rendm_km;
     }
