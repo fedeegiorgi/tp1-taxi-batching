@@ -8,7 +8,7 @@ GreedySolver::GreedySolver(TaxiAssignmentInstance &instance) {
     this->_objective_value = 0;
     this->_solution_status = 0;
     this->_solution_time = 0;
-    
+
     // Inicializamos un objeto soluciòn que luego serà modificado por el mètodo "solve" al momento de resolver el problema para la instancia dada.
     this->_solution = TaxiAssignmentSolution(this->_instance.n); 
 }
@@ -46,6 +46,7 @@ void GreedySolver::solve() {
     std::chrono::duration<double> duration = end - start;
     
     this->_solution_time = duration.count(); // Asignamos al tiempo que tardamos en dar la solución lo que nos marca el timer.
+    this->_solution_status = 1; // Marcamos que el problema fue resuelto.
 }
 
 double GreedySolver::getObjectiveValue() const {
