@@ -15,7 +15,7 @@ class TaxiAssignmentChecker
 
         bool checkFeasibility(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
         void getFeasibilityStatus();
-        bool getSolutionCost(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
+        double getSolutionCost(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
   
 
 	
