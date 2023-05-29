@@ -76,8 +76,8 @@ int main(int argc, char** argv) {
         batching_2_solver.solve();
 
         results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue(), batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_solver.getObjectiveValue(), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
     }
 
     // obtención de los resultados para los tamaños de muestra n = 100.
@@ -98,8 +98,8 @@ int main(int argc, char** argv) {
         batching_2_solver.solve();
 
         results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue(), batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_solver.getObjectiveValue(), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
     }
 
     // obtención de los resultados para los tamaños de muestra n = 250.
@@ -120,8 +120,8 @@ int main(int argc, char** argv) {
         batching_2_solver.solve();
 
         results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue(), batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_solver.getObjectiveValue(), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
     }
 
     // obtención de los resultados para los tamaños de muestra n = 500.
@@ -142,14 +142,14 @@ int main(int argc, char** argv) {
         batching_2_solver.solve();
 
         results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue(), batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_solver.getObjectiveValue(), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
     }
 
     exportToCSV(results, "results.csv");
 
     // ------------------------------------------------------------
-    // 
+    
     // Prints de prueba por archivo
     // La idea es imprimir para cada estrategia:
     // - Asignación
