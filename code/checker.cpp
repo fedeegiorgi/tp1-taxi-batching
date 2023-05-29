@@ -8,7 +8,7 @@ bool TaxiAssignmentChecker::checkFeasibility(const TaxiAssignmentInstance &insta
     return ret;
 }
 
-double TaxiAssignmentChecker::getSolutionCost(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution) {
+double TaxiAssignmentChecker::getSolutionBenefit(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution) {
     double ret = 0.0;
     
     for (int i = 0; i < instance.n; i++) {
@@ -18,4 +18,15 @@ double TaxiAssignmentChecker::getSolutionCost(const TaxiAssignmentInstance &inst
     }
 
     return ret/instance.n;
+}
+
+double TaxiAssignmentChecker::getSolutionCost(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution) {
+    double ret = 0.0;
+    
+    for (int i = 0; i < instance.n; i++) {
+        int j = solution.getAssignedPax(i)-1; // -1 pues estan numerados del 1 al 10 para que no se confunda en batching con 0 que es el nodo source.
+        ret += instance.dist[i][j];
+    }
+
+    return ret;
 }

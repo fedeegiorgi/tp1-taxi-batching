@@ -156,7 +156,8 @@ std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<doubl
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
-            flattened.push_back(matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10); // multiplicación por 10 para que sea entero
+            int costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / this->_instance.pax_tot_fare[index];
+            flattened.push_back(costo);
         }
     }
     for (int j = 0; j < n; j++){
