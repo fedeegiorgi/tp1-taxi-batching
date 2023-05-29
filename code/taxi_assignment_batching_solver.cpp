@@ -88,12 +88,12 @@ void BatchingSolver::_create_network(TaxiAssignmentInstance &instance) {
     this->_sink = 2 * instance.n + 1;
     this->_supplies = _set_supplies(instance.n);
 
-    // Add each arc.
+    // Añadimos cada arco.
     for (int i = 0; i < this->_start_nodes.size(); ++i) {
         int arc = this->_min_cost_flow.AddArcWithCapacityAndUnitCost(this->_start_nodes[i], this->_end_nodes[i], this->_capacities[i], this->_unit_costs[i]);
     }
 
-    // Add node supplies.
+    // Añadimos los imbalances a los nodos.
     for (int i = 0; i < this->_supplies.size(); ++i) {
         this->_min_cost_flow.SetNodeSupply(i, this->_supplies[i]);
     }
@@ -102,19 +102,19 @@ void BatchingSolver::_create_network(TaxiAssignmentInstance &instance) {
 std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
     std::vector<int64_t> ret;
     
-    // seteo 0s para arcos de source a taxis
+    // Seteamos 0s para arcos de source a taxis
     for (int i = 0; i < n; i++) {
         ret.push_back(0);
     }
 
-    // seteo start nodes de cada taxi a cada pax
+    // Seteamos start_nodes de cada taxi a cada pax
     for (int i = 1; i < n+1; i++) {
         for (int j = 0; j < n; j++) {
             ret.push_back(i);
         }
     }
 
-    // seteo start nodes 
+    // Seteamos start_nodes de cada pax a sink t 
     for (int i = n+1; i < 2*n+1; i++) {
         ret.push_back(i);
     }
