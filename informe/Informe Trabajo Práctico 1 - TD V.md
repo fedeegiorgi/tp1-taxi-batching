@@ -47,7 +47,7 @@ Esta estrategia e implementación es totalmente válida. Sin embargo, si hay una
 
 Llamamos a ese grupo de clientes que pide el viaje en el lapso de tiempo en el que estamos esperando "batch", de ahí el nombre batching.
 
-Nuestro objetivo es de alguna manera realizar una asignación de vehículos a pasajeros de forma tal que la suma de las distancias recorridas de los vehículos para recoger a los pasajeros sea mínima.
+Con este batch podremos tomar una decisión global para el problema de asignación. Así, nuestro objetivo es de alguna manera realizar una asignación de vehículos a pasajeros de forma tal que la suma de las distancias recorridas de los vehículos para recoger a los pasajeros sea mínima. De esta forma, buscaremos no sólo disminuir el tiempo de espera colectivo de todos los pasajeros del batch sino también reducir los costos para los conductres teniendo que recorrer una menor distancia colectiva.
 
 Notar que es posible que en algun momento elijamos un vehículo que no es el mas cercano a un pasajero, porque al final termina siendo mejor para minimizar la suma de distancias, por lo que esta estrategia es totalmente distinta a la estrategia *greedy* vista anteriormente.
 
@@ -97,6 +97,32 @@ Con esto, el problema de implementar nuestro modelo y calcular el flujo maximo c
 ¿Cómo hacemos esto para una instancia cualquiera?
 
 ### Experimentación
+
+Dado que una de las principales motivaciones de la formulación de un nuevo modelo (que tome una decisión global para la asignación entre vehículos y pasajeros) es la reducción de costos de los conductores y tiempos de espera de los pasajeros, nos proponemos, a través de experimentaciones, verificar si efectivamente el nuevo modelo aporta en esa dirección. 
+
+Teniendo en cuenta que la implementación de la estrategia de Bacthing toma a las distancias de recogida como los costos a minimizar, el principal criterio a considerar será ver cómo se comparan estos costos, computados como la suma de distancias para cada instancia, entre las distintas estrategias (columnas \<estrategia\>_cost en el dataframe de resultados).
+
+En segundo lugar, además de analizar los costos, buscaremos analizar el rendimiento económico de los conductores dado un ratio de rendimiento por km recorrido (columnas \<estrategia\>_benefit en el dataframe de resultados). Este ratio se define como:
+
+$$
+r = \frac{tarifa\:(\$)}{dist.\:recogida + dist.\:viaje \:(km)}
+$$
+
+Por último, tomamos el tiempo de ejecución de cada estrategia utilizando la librería chrono de C++.
+
+Para comparar el modelo propuesto con la estrategia de Batching con la versión actual de la empresa (FCFS) definimos las siguientes métricas:
+- %cost_gap: diferencia porcentual relativa de la estrategia batching sobre la greedy en base a los costos.
+- %time_gap: diferencia porcentual relativa de la estrategia batching sobre la greedy en base al tiempo de ejecución.
+- %yield_gap: diferencia porcentual relativa de la estrategia batching sobre la greedy en base al rendimiento económico de cada kilómetro recorrido por el conductor para concretar el viaje del pasajero asignado.
+
 ### Discusión y análisis de resultados
+
+|   n   | %cost_gap | %time_gap | %yield_gap |
+|-------|-----------|-----------|------------|
+| 10    | 14.74     | -4005.53  | -12.78     |
+| 100   | 16.90     | -6840.77  | -4.00      |
+| 250   | 17.32     | -5425.12  | 1.04       |
+| 500   | 14.57     | -6527.45  | 16.67      |
+
 ### Limitaciones y posibles extensiones
 ### Modelo Alternativo
