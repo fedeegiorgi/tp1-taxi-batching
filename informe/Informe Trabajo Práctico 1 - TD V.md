@@ -95,12 +95,40 @@ Utilizando el modelo explicado, realizamos una implementación de esta estrategi
 Con esto, el problema de implementar nuestro modelo y calcular el flujo maximo con costo minimo se reduce a simplemente representar nuestro grafo con esos 5 vectores.
 
 ¿Cómo hacemos esto para una instancia cualquiera?
+Debemos tener en cuenta que nuestro input tiene una matriz de $n \times n$ de taxis y pasajeros, donde la posicion $i, j$ determina $dist_{ij}$. 
+
+Con la información de este output y numerando...
+- El nodo source como 0.
+- Los taxis del 1 al $n$.
+- Los pasajeros del $n+1$ al $2n$.
+- El nodo sink como $2n+1$.
+
+Podemos armar los 5 vectores de la siguiente manera:
+- start_nodes:
+	1. Inicializamos el vector con $n$ ceros, que serán todas las conexiones de nuestro nodo source (al cual numeramos como nodo 0).
+	2. Luego, agregamos al vector las conexiones de cada taxi a todos los pasajeros, es decir, agregaremos $n$ veces cada taxi (los cuales numeramos del 1 al $n$).
+	3. Finalmente, agregamos al vector las conexiones de los pasajeros al vector sink (al cual numeramos como nodo 2n+1), es decir, agregamos la secuencia $n+1, n+2, \cdots, 2n$.
+- end_nodes:
+	1. Este vector de alguna manera "cierra las conexiones" que abrimos en el vector anterior, por lo que debemos inicializarlo cerrando las conexiones de nuestro nodo source a los taxis, es decir, agregamos la secuencia $1, 2, \cdots, n$. 
+	2. Luego, debemos cerrar las conexiones de cada taxi a todos los pasajeros, es decir, para el taxi 1, que en start_nodes se encuentra $n$ veces lo tenemos que conectar con los $n$ pasajeros, y así para todos los taxis, por lo que debemos agregar $n$ veces la secuencia $n+1, n+2, \cdots, 2n$. 
+	3. Finalmente, debemos cerrar las conexiones de los pasajeros al nodo sink es decir, conectar el nodo del pasajero $n+1$ con el nodo sink $2n+1$, el nodo del pasajero $n+2$ con el nodo sink $2n+1$ y así hasta conectar todos los pasajeros. Para ello agregamos $n$ veces $2n+1$.
+- capacities:
+	1. Como vimos en el modelo, todas las capacidades de los arcos son 1, por lo tanto simplemente debemos crear un vector con $2n + n ^ 2$ (cantidad de arcos) unos.
+- cost_units:
+	1. Como vimos en el modelo, los arcos como los de source a los taxis tienen costo 0, por lo que inicializamos el vector con $n$ ceros.
+	2. Ahora, debemos agregar los costos (distancias) de cada taxi a cada pasajero, que es justamente lo que tenemos en la matriz. Por lo tanto, debemos aplanar la matriz y "concatenar" nuestro vector con $n$ ceros y la matriz aplanada. En nuestro código a medida que vamos aplanando la matriz la vamos agregando al vector, logrando el mismo objetivo.
+	3. Finalmente, como los arcos de los pasajeros al sink tambien tienen costo 0, debemos agregar $n$ ceros mas al final del vector, para obtener nuestro vector de costos.
+- supplies:
+	1. Or-Tools nos pide un vector de inbalances, pero, si observamos nuestro modelo, no hay inbalances en los nodos, simplemente se cumple que, salvo para $S$ y $T$ en cada nodo la cantidad de flujo que entra al nodo debe ser igual a la cantidad de flujo que sale del nodo. Sin embargo, si vemos la definición de inbalance, nos dice que el inbalance $b_i = \sum{x_{ij}} - \sum{x_{ji}}$, es decir, el inbalance debe ser igual a la diferencia entre "lo que sale y lo que entra". Si queremos agregar inbalances a nuestro modelo y que se siga cumpliendo la ecuación de conservación de flujo, a todos los nodos exceptuando $S$ y $T$ les asignamos inbalance 0 y ambos modelos son equivalentes.
+	2. ¿Que hacemos para $S$ y $T$? Por como se define el problema de flujo con inbalances, necesitamos que estos se balanceen es decir que $\sum{b_i} = 0$. Como todos los inbalances de los otros nodos son 0, necesariamente $b_S = -b_T$. Podriamos elegir cualquier $k$ y decir que $b_S = k$, $b_T = -k$ pero en este caso en particular nosotros queremos que de source salgan los $n$ taxis y a sink ingresen los $n$ pasajeros, por lo que para que se cumpla ello, diremos que $b_S = n$ , $b_T = -n$. Recordando que el inbalance es la diferencia entre lo que sale y lo que entra podemos ver porqué tiene sentido, ya que de source salen $n$ taxis y no entra nada ($n - 0 = n$) y de sink no sale nada y llegan $n$ pasajeros ($0 - n = -n$).
+	3. Una vez planteado esto, es sencillo armar el vector. Inicializamos un vector de tamaño $2n+2$ (cantidad de nodos) con todo ceros y cambiamos la posicion 0 del vector por n, y la posicion 2n+1 del vector por -n.
+	4. De esta manera nos queda un vector de inbalances como el planteado: $[n, 0, 0, \cdots, 0, -n]$.  
 
 ### Experimentación
 
 Dado que una de las principales motivaciones de la formulación de un nuevo modelo (que tome una decisión global para la asignación entre vehículos y pasajeros) es la reducción de costos de los conductores y tiempos de espera de los pasajeros, nos proponemos, a través de experimentaciones, verificar si efectivamente el nuevo modelo aporta en esa dirección. 
 
-Teniendo en cuenta que la implementación de la estrategia de Bacthing toma a las distancias de recogida como los costos a minimizar, el principal criterio a considerar será ver cómo se comparan estos costos, computados como la suma de distancias para cada instancia, entre las distintas estrategias (columnas \<estrategia\>_cost en el dataframe de resultados).
+Teniendo en cuenta que la implementación de la estrategia de Batching toma a las distancias de recogida como los costos a minimizar, el principal criterio a considerar será ver cómo se comparan estos costos, computados como la suma de distancias para cada instancia, entre las distintas estrategias (columnas \<estrategia\>_cost en el dataframe de resultados).
 
 En segundo lugar, además de analizar los costos, buscaremos analizar el rendimiento económico de los conductores dado un ratio de rendimiento por km recorrido (columnas \<estrategia\>_benefit en el dataframe de resultados). Este ratio se define como:
 

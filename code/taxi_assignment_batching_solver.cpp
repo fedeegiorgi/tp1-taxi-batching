@@ -108,14 +108,14 @@ std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
     }
 
     // Seteamos start_nodes de cada taxi a cada pax
-    for (int i = 1; i < n+1; i++) {
+    for (int64_t i = 1; i < n+1; i++) {
         for (int j = 0; j < n; j++) {
             ret.push_back(i);
         }
     }
 
     // Seteamos start_nodes de cada pax a sink t 
-    for (int i = n+1; i < 2*n+1; i++) {
+    for (int64_t i = n+1; i < 2*n+1; i++) {
         ret.push_back(i);
     }
 
@@ -125,12 +125,12 @@ std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
 std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
     std::vector<int64_t> ret;
 
-    for(int i = 1; i < n+1; i++){
+    for(int64_t i = 1; i < n+1; i++){
         ret.push_back(i);
     }
 
     for(int i = n+1; i < 2*n+1; i++){
-        for(int j = 0; j < n; j++)
+        for(int64_t j = 0; j < n; j++)
             ret.push_back(n+1+j);
     }
 
@@ -156,7 +156,7 @@ std::vector<int64_t> BatchingSolver::_set_costs(std::vector<std::vector<double>>
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
-            flattened.push_back(matrix[fila][index]*10); // multiplicación por 10 para que sea entero
+            flattened.push_back(int64_t(matrix[fila][index]*10)); // multiplicación por 10 para que sea entero
         }
     }
     for (int j = 0; j < n; j++){
@@ -168,8 +168,8 @@ std::vector<int64_t> BatchingSolver::_set_costs(std::vector<std::vector<double>>
 std::vector<int64_t> BatchingSolver::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
 
-    supplies[0] = n;
-    supplies[2*n+1] = -n;
+    supplies[0] = int64_t(n);
+    supplies[2*n+1] = int64_t(-n); // PREGUNTAR SI ES NECESARIO
 
     return supplies;
 }
