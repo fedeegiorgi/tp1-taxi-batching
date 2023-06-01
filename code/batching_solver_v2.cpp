@@ -157,6 +157,9 @@ std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<doubl
         int index = 0;
         for (index; index < n; index++){
             int costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / this->_instance.pax_tot_fare[index];
+            if (this->_instance.pax_tot_fare[index] <= 0) {
+                std::cout << this->_instance.pax_tot_fare[index] << ", " << costo << std::endl;
+            }
             flattened.push_back(costo);
         }
     }
