@@ -43,7 +43,7 @@ void BatchingSolver_v2::solve() {
 
     // Frenamos timer.
     end = std::chrono::system_clock::now();
-    std::chrono::duration<double> duration = end - start;
+    std::chrono::duration<double, std::milli> duration = end - start;
     
     this->_solution_time = duration.count();
 

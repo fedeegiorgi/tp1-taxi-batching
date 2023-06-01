@@ -43,7 +43,7 @@ void GreedySolver::solve() {
 
     // Frenamos timer.
     end = std::chrono::system_clock::now();
-    std::chrono::duration<double> duration = end - start;
+    std::chrono::duration<double, std::milli> duration = end - start;
     
     this->_solution_time = duration.count(); // Asignamos al tiempo que tardamos en dar la solución lo que nos marca el timer.
     this->_solution_status = 1; // Marcamos que el problema fue resuelto.
