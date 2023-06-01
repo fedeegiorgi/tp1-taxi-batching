@@ -58,95 +58,95 @@ int main(int argc, char** argv) {
 
     std::vector<Result> results;
 
-    // obtención de los resultados para los tamaños de muestra n = 10.
-    for (int i = 0; i < 10; i++) {
-        std::string filename = "input/small_" + std::to_string(i) + ".csv";
-        TaxiAssignmentInstance instance(filename);
+    // // obtención de los resultados para los tamaños de muestra n = 10.
+    // for (int i = 0; i < 10; i++) {
+    //     std::string filename = "input/small_" + std::to_string(i) + ".csv";
+    //     TaxiAssignmentInstance instance(filename);
 
-        GreedySolver greedy_solver(instance);
-        TaxiAssignmentChecker greedy_checker;
-        greedy_solver.solve();
+    //     GreedySolver greedy_solver(instance);
+    //     TaxiAssignmentChecker greedy_checker;
+    //     greedy_solver.solve();
 
-        BatchingSolver batching_solver(instance);
-        TaxiAssignmentChecker batching_checker;
-        batching_solver.solve();
+    //     BatchingSolver batching_solver(instance);
+    //     TaxiAssignmentChecker batching_checker;
+    //     batching_solver.solve();
 
-        BatchingSolver_v2 batching_2_solver(instance);
-        TaxiAssignmentChecker batching_2_checker;
-        batching_2_solver.solve();
+    //     BatchingSolver_v2 batching_2_solver(instance);
+    //     TaxiAssignmentChecker batching_2_checker;
+    //     batching_2_solver.solve();
 
-        results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
-    }
+    //     results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
+    //                        batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+    //                        batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+    // }
 
-    // obtención de los resultados para los tamaños de muestra n = 100.
-    for (int i = 0; i < 10; i++) {
-        std::string filename = "input/medium_" + std::to_string(i) + ".csv";
-        TaxiAssignmentInstance instance(filename);
+    // // obtención de los resultados para los tamaños de muestra n = 100.
+    // for (int i = 0; i < 10; i++) {
+    //     std::string filename = "input/medium_" + std::to_string(i) + ".csv";
+    //     TaxiAssignmentInstance instance(filename);
 
-        GreedySolver greedy_solver(instance);
-        TaxiAssignmentChecker greedy_checker;
-        greedy_solver.solve();
+    //     GreedySolver greedy_solver(instance);
+    //     TaxiAssignmentChecker greedy_checker;
+    //     greedy_solver.solve();
 
-        BatchingSolver batching_solver(instance);
-        TaxiAssignmentChecker batching_checker;
-        batching_solver.solve();
+    //     BatchingSolver batching_solver(instance);
+    //     TaxiAssignmentChecker batching_checker;
+    //     batching_solver.solve();
 
-        BatchingSolver_v2 batching_2_solver(instance);
-        TaxiAssignmentChecker batching_2_checker;
-        batching_2_solver.solve();
+    //     BatchingSolver_v2 batching_2_solver(instance);
+    //     TaxiAssignmentChecker batching_2_checker;
+    //     batching_2_solver.solve();
 
-        results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
-    }
+    //     results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
+    //                        batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+    //                        batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+    // }
 
-    // obtención de los resultados para los tamaños de muestra n = 250.
-    for (int i = 0; i < 10; i++) {
-        std::string filename = "input/large_" + std::to_string(i) + ".csv";
-        TaxiAssignmentInstance instance(filename);
+    // // obtención de los resultados para los tamaños de muestra n = 250.
+    // for (int i = 0; i < 10; i++) {
+    //     std::string filename = "input/large_" + std::to_string(i) + ".csv";
+    //     TaxiAssignmentInstance instance(filename);
 
-        GreedySolver greedy_solver(instance);
-        TaxiAssignmentChecker greedy_checker;
-        greedy_solver.solve();
+    //     GreedySolver greedy_solver(instance);
+    //     TaxiAssignmentChecker greedy_checker;
+    //     greedy_solver.solve();
 
-        BatchingSolver batching_solver(instance);
-        TaxiAssignmentChecker batching_checker;
-        batching_solver.solve();
+    //     BatchingSolver batching_solver(instance);
+    //     TaxiAssignmentChecker batching_checker;
+    //     batching_solver.solve();
 
-        BatchingSolver_v2 batching_2_solver(instance);
-        TaxiAssignmentChecker batching_2_checker;
-        batching_2_solver.solve();
+    //     BatchingSolver_v2 batching_2_solver(instance);
+    //     TaxiAssignmentChecker batching_2_checker;
+    //     batching_2_solver.solve();
 
-        results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
-    }
+    //     results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
+    //                        batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+    //                        batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+    // }
 
-    // obtención de los resultados para los tamaños de muestra n = 500.
-    for (int i = 0; i < 10; i++) {
-        std::string filename = "input/xl_" + std::to_string(i) + ".csv";
-        TaxiAssignmentInstance instance(filename);
+    // // obtención de los resultados para los tamaños de muestra n = 500.
+    // for (int i = 0; i < 10; i++) {
+    //     std::string filename = "input/xl_" + std::to_string(i) + ".csv";
+    //     TaxiAssignmentInstance instance(filename);
 
-        GreedySolver greedy_solver(instance);
-        TaxiAssignmentChecker greedy_checker;
-        greedy_solver.solve();
+    //     GreedySolver greedy_solver(instance);
+    //     TaxiAssignmentChecker greedy_checker;
+    //     greedy_solver.solve();
 
-        BatchingSolver batching_solver(instance);
-        TaxiAssignmentChecker batching_checker;
-        batching_solver.solve();
+    //     BatchingSolver batching_solver(instance);
+    //     TaxiAssignmentChecker batching_checker;
+    //     batching_solver.solve();
 
-        BatchingSolver_v2 batching_2_solver(instance);
-        TaxiAssignmentChecker batching_2_checker;
-        batching_2_solver.solve();
+    //     BatchingSolver_v2 batching_2_solver(instance);
+    //     TaxiAssignmentChecker batching_2_checker;
+    //     batching_2_solver.solve();
 
-        results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
-                           batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
-                           batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
-    }
+    //     results.push_back({instance.n, greedy_solver.getObjectiveValue(), greedy_solver.getSolutionTime(), greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()), 
+    //                        batching_solver.getObjectiveValue()/10.0, batching_solver.getSolutionTime(), batching_checker.getSolutionBenefit(instance, batching_solver.getSolution()), 
+    //                        batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()), batching_2_solver.getSolutionTime(), batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution())});
+    // }
 
-    exportToCSV(results, "results.csv");
+    // exportToCSV(results, "results.csv");
 
     // ------------------------------------------------------------
     
@@ -157,23 +157,23 @@ int main(int argc, char** argv) {
     // - Tiempo de ejecución de asignación
     // - Medida de beneficio (rendimiento de $ por km)
 
-    // std::string filename = "input/small_1.csv";
+    std::string filename = "input/small_1.csv";
 
-    // TaxiAssignmentInstance instance(filename);
-    // std::cout << filename << std::endl;
+    TaxiAssignmentInstance instance(filename);
+    std::cout << filename << std::endl;
 
-    // GreedySolver greedy_solver(instance);
-    // TaxiAssignmentChecker greedy_checker;
+    GreedySolver greedy_solver(instance);
+    TaxiAssignmentChecker greedy_checker;
 
-    // greedy_solver.solve();
+    greedy_solver.solve();
 
     // std::cout << greedy_solver.getSolution() << std::endl;
-    // std::cout << greedy_solver.getObjectiveValue() << std::endl;
-    // std::cout << greedy_checker.getSolutionCost(instance, greedy_solver.getSolution()) << std::endl;
-    // std::cout << greedy_solver.getSolutionTime() << std::endl;
-    // std::cout << greedy_checker.getSolutionBenefit(instance, greedy_solver.getSolution()) << std::endl;
+    std::cout << greedy_solver.getObjectiveValue() << std::endl;
+    std::cout << greedy_checker.getSolutionCost(instance, greedy_solver.getSolution()) << std::endl;
+    std::cout << greedy_solver.getSolutionTime() << std::endl;
+    std::cout << greedy_checker.getSolutionBenefit_2(instance, greedy_solver.getSolution()) << std::endl;
 
-    // std::cout << "" << std::endl;
+    std::cout << "" << std::endl;
 
     // BatchingSolver batching_solver(instance);
     // TaxiAssignmentChecker batching_checker;
@@ -188,15 +188,15 @@ int main(int argc, char** argv) {
 
     // std::cout << "" << std::endl;
 
-    // BatchingSolver_v2 batching_2_solver(instance);
-    // TaxiAssignmentChecker batching_2_checker;
+    BatchingSolver_v2 batching_2_solver(instance);
+    TaxiAssignmentChecker batching_2_checker;
 
-    // batching_2_solver.solve();
+    batching_2_solver.solve();
 
-    // std::cout << batching_2_solver.getSolution() << std::endl;
-    // std::cout << batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()) << std::endl;
-    // std::cout << batching_2_solver.getSolutionTime() << std::endl;
-    // std::cout << batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution()) << std::endl;
+    std::cout << batching_2_solver.getSolution() << std::endl;
+    std::cout << batching_2_checker.getSolutionCost(instance, batching_2_solver.getSolution()) << std::endl;
+    std::cout << batching_2_solver.getSolutionTime() << std::endl;
+    std::cout << batching_2_checker.getSolutionBenefit(instance, batching_2_solver.getSolution()) << std::endl;
 
     return 0;
 }
