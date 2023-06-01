@@ -22,8 +22,8 @@ void GreedySolver::solve() {
     // _solution.getAssignedPax(i-esimo taxi) y _solution.getAssignedTaxi(j-esimo pax) den solución para todo i y j.
     
     // Inicializamos timer.
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+    std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+    start = std::chrono::high_resolution_clock::now();
 
     int n = this->_solution.getN(); // n = cantidad de pasajeros = cantidad de taxis.
 
@@ -42,10 +42,10 @@ void GreedySolver::solve() {
     }
 
     // Frenamos timer.
-    end = std::chrono::system_clock::now();
-    std::chrono::duration<double, std::milli> duration = end - start;
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
     
-    this->_solution_time = duration.count(); // Asignamos al tiempo que tardamos en dar la solución lo que nos marca el timer.
+    this->_solution_time = duration.count() * 1000; // Asignamos al tiempo que tardamos en dar la solución lo que nos marca el timer.
     this->_solution_status = 1; // Marcamos que el problema fue resuelto.
 }
 

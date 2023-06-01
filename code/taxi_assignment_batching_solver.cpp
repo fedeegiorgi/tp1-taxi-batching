@@ -19,8 +19,8 @@ void BatchingSolver::setInstance(TaxiAssignmentInstance &instance) {
 void BatchingSolver::solve() {
 
     // Inicializamos timer.
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+    std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+    start = std::chrono::high_resolution_clock::now();
 
     this->_solution_status = this->_min_cost_flow.Solve();
     this->_objective_value = this->_min_cost_flow.OptimalCost();
@@ -42,10 +42,10 @@ void BatchingSolver::solve() {
     }
 
     // Frenamos timer.
-    end = std::chrono::system_clock::now();
-    std::chrono::duration<double, std::milli> duration = end - start;
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
     
-    this->_solution_time = duration.count();
+    this->_solution_time = duration.count() * 1000;
 
     // prints de chequeo
 
