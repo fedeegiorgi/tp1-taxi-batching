@@ -39,7 +39,7 @@ Datos:
 
 -   Por cada conductor disponible para realizar un viaje podemos asumir que tenemos su localización en tiempo real.
 
-Luego, oombinando ambas podemos asumir entonces que tenemos la distancia que llevaría a cada vehículo llegar a un potencial pasajero para comenzar el viaje.
+Luego, combinando ambas podemos asumir entonces que tenemos la distancia que llevaría a cada vehículo llegar a un potencial pasajero para comenzar el viaje.
 
 Simplificaciones al problema:
 
@@ -73,7 +73,7 @@ Como parte del trabajo como consultores para la plataforma de intermediación de
 
 Para ello, siguiendo la idea de la estrategia explicada, realizamos una implementación de la misma en C++ que toma los datos de la distancia entre vehículos y pasajeros (en orden de llegada) en forma de una matriz y la recorre para asignarle a cada pasajero el vehículo disponible más cercano a su posición (*ver GreedySolver.cpp*).
 
-Esta estrategia e implementación es totalmente válida. Sin embargo, si hay una cantidad de demanda significativa, es posible tomar otro enfoque, en el que en lugar de ir atendiendo por orden de llegada en tiempo real, se espera cierta cantidad de tiempo (algunos segundos) y se agrupa a los pasajeros que hayan pedido un viaje en ese lapso de tiempo, para luego tomar una decisión de asignación de vehículos sabiendo las localizaciones de todos. A esto se lo llama estrategia de "batching."
+Esta estrategia e implementación es totalmente válida. Sin embargo, si hay una cantidad de demanda significativa, es posible tomar otro enfoque, en el que en lugar de ir atendiendo por orden de llegada en tiempo real, se espera cierta cantidad de tiempo (algunos segundos) y se agrupa a los pasajeros que hayan pedido un viaje en ese lapso de tiempo, para luego tomar una decisión de asignación de vehículos sabiendo las localizaciones de todos. Dicha estrategia se denomina "batching".
 
 ## Estrategia de Batching
 
@@ -81,9 +81,11 @@ Llamamos a ese grupo de clientes que pide el viaje en el lapso de tiempo en el q
 
 Con este batch podremos tomar una decisión global para el problema de asignación. Así, nuestro objetivo es de alguna manera realizar una asignación de vehículos a pasajeros de forma tal que la suma de las distancias recorridas de los vehículos para recoger a los pasajeros sea mínima. De esta forma, buscaremos no sólo disminuir el tiempo de espera colectivo de todos los pasajeros del batch sino también reducir los costos para los conductores teniendo que recorrer una menor distancia colectiva.
 
-Notar que es posible que en algun momento elijamos un vehículo que no es el mas cercano a un pasajero. Sin embargo, esta decisión local no optima pero permite aportar a la mejor decisión global para minimizar la suma de distancias. Así, esta estrategia es totalmente distinta a la estrategia *greedy* vista anteriormente.
+Notar que es posible que en algun momento elijamos un vehículo que no es el mas cercano a un pasajero. Sin embargo, esta decisión local no optima permite aportar a la mejor decisión global para minimizar la suma de distancias. Así, esta estrategia es totalmente distinta a la estrategia *greedy* vista anteriormente.
 
-Para realizar esta asignación vamos a modelar el problema con grafos.
+Se puede ver que $\sum{dist_{ij}}$ *en batching* $\leq \sum{dist_{ij}}$ *en greedy* ya que, si minimizamos la suma de distancias teniendo toda la información, si o si esa suma sera menor o a lo sumo igual que elegir el taxi mas cercano para cada pasajero en orden mientras van llegando los pedidos de viaje (podría ser igual en el caso en el que casualmente la asignación que minimiza las distancias es la misma que la de asignarle el taxi mas cercano a cada pasajero por orden de llegada).
+
+Vamos a modelar el problema de encontrar dicha asignación optima con grafos.
 
 ### Modelo para estrategia de Batching
 
