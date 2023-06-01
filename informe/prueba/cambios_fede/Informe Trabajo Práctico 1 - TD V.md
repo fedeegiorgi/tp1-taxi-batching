@@ -240,7 +240,15 @@ Además, es importante resaltar que si bien estos resultados se obtuvieron utili
 
 ## Estrategia Alternativa
 
-- misma idea de batching pero con distinto costo
+Dada la información con la que cuenta la empresa la cuál nos contrata como consultores, tendríamos la posibilidad de atacar la limitación acerca de la relación entre los costos de los conductores y el beneficio económico por el viaje. Para ello, de alguna forma deberíamos buscar maximizar el ratio *r* de rendimiento por *km* mencionado en la sección de experimentación previa.
+
+Considerando que en la estratgia de batching adaptamos nuestro problema a un problema de flujo máximo de costo mínimo, podríamos hacer lo mismo en este caso. Sin embargo, dado que aquí queremos maximizar beneficio deberíamos definir un nuevo ratio de la forma
+
+$$
+r' = \frac{dist.\:recogida + dist.\:viaje \:(km)}{tarifa\:(\$)}
+$$
+
+que en vez de representar la cantidad de dinero por *km* recorrido, indique la cantidad de *km* necesarios para recibir una unidad de dinero extra. Así, cuanto más chico sea este ratio $r'$ mayor rendimiento económico recibirán los conductores.
   
 ### Modelo para estrategia alternativa
 
@@ -251,3 +259,11 @@ De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alter
 ![Modelo Alternativo](alternativo_test.png)
 
 ### Implementación para estrategia alternativa
+
+Al igual que con la estrategia de batching, realizamos una implementación de esta estrategia utilizando la librería "or-tools" con las mismas estructuras de datos definidas para resolver el problema de flujo máximo con costo mínimo. Los vectores requeridos por la libreía serán costruidos de la misma manera que en la estrategia batching para cada instancia con excepción del vector "cost_units". Para el mismo tendremos en cuenta:
+
+1. Como vimos en el modelo, los arcos como los de source a los taxis tienen costo 0, por lo que inicializamos el vector con $n$ ceros.
+   
+2. Ahora, debemos agregar los costos (distancias) de cada taxi a cada pasajero, que es justamente lo que tenemos en la matriz. Por lo tanto, debemos aplanar la matriz y "concatenar" nuestro vector con $n$ ceros y la matriz aplanada. En nuestro código a medida que vamos aplanando la matriz la vamos agregando al vector, logrando el mismo objetivo.
+   
+3. Finalmente, como los arcos de los pasajeros al sink tambien tienen costo 0, debemos agregar $n$ ceros mas al final del vector, para obtener nuestro vector de costos.
