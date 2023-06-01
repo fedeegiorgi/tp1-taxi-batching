@@ -269,3 +269,26 @@ Al igual que con la estrategia de batching, realizamos una implementación de es
 3. Finalmente, como en el modelo anterior, los arcos de los pasajeros al sink tambien tienen costo 0. Por lo tanto debemos hacer lo mismo que en nuestra primera implementación, agregar $n$ ceros mas al final del vector, para obtener así nuestro vector de costos.
 
 Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del modelo alternativo.
+
+## Resultados y conclusiones
+
+|     n |   greedy_cost |   greedy_time |   greedy_benefit |
+|------:|--------------:|--------------:|-----------------:|
+|  1000 |          4693 |          0.11 |           199.41 |
+| 10000 |         33731 |          5.04 |           283.54 |
+| 25000 |         84960 |         36.39 |           308.99 |
+| 50000 |        155329 |        149.12 |           368.82 |
+
+|     n |   batching_cost |   batching_time |   batching_benefit |
+|------:|----------------:|----------------:|-------------------:|
+|  1000 |            4006 |            4.22 |             223.44 |
+| 10000 |           28063 |          255.54 |             293.71 |
+| 25000 |           70160 |         1743.98 |             303.36 |
+| 50000 |          132682 |         8661.76 |             301.08 |
+
+|     n |   alternative_cost |   alternative_time |   alternative_benefit |
+|------:|-------------------:|-------------------:|----------------------:|
+|  1000 |               4133 |               2.8  |                226.61 |
+| 10000 |              30493 |             303.47 |                309.17 |
+| 25000 |              75990 |            1684    |                320.04 |
+| 50000 |             142195 |            9538.96 |                336.35 |
