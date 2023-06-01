@@ -159,7 +159,7 @@ std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<doubl
             int costo;
             if (this->_instance.pax_tot_fare[index] < 0) {
                 costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / (this->_instance.pax_tot_fare[index]*-1);
-            } else if (this->_instance.pax_tot_fare[index] = 0) {
+            } else if (this->_instance.pax_tot_fare[index] == 0) {
                 costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / 1;
             } else {
                 costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / this->_instance.pax_tot_fare[index];
