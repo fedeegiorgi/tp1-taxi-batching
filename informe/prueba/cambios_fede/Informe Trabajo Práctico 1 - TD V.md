@@ -254,16 +254,18 @@ que en vez de representar la cantidad de dinero por *km* recorrido, indique la c
 
 Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que seguimos teniendo que buscar un flujo maximo con costo minimo, antes buscabamos que se asignen $n$ taxis a $n$ pasajeros minimizando la suma de las distancias y ahora buscamos que se asignen $n$ taxis a $n$ pasajeros pero minimizando nuestro ratio $r'$. Teniendo en cuenta esto, nuestro modelo anterior, cambiando distancias por $r'$ es esencialmente lo mismo.
 
-De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo.
+De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde $$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
 
 ![Modelo Alternativo](alternativo_test.png)
 
 ### Implementación para estrategia alternativa
 
-Al igual que con la estrategia de batching, realizamos una implementación de esta estrategia utilizando la librería "or-tools" con las mismas estructuras de datos definidas para resolver el problema de flujo máximo con costo mínimo. Los vectores requeridos por la libreía serán costruidos de la misma manera que en la estrategia batching para cada instancia con excepción del vector "cost_units". Para el mismo tendremos en cuenta:
+Al igual que con la estrategia de batching, realizamos una implementación de esta estrategia utilizando la librería "or-tools" con las mismas estructuras de datos definidas para resolver el problema de flujo máximo con costo mínimo. Los vectores requeridos por la librería serán construidos de la misma manera que en la estrategia batching para cada instancia con excepción del vector "cost_units". Para el mismo tendremos en cuenta:
 
-1. Como vimos en el modelo, los arcos como los de source a los taxis tienen costo 0, por lo que inicializamos el vector con $n$ ceros.
+1. Como en el anterior modelo, los arcos de source a los taxis tienen costo 0, por lo que, al igual que en la primera implementación, inicializamos el vector con $n$ ceros.
    
-2. Ahora, debemos agregar los costos (distancias) de cada taxi a cada pasajero, que es justamente lo que tenemos en la matriz. Por lo tanto, debemos aplanar la matriz y "concatenar" nuestro vector con $n$ ceros y la matriz aplanada. En nuestro código a medida que vamos aplanando la matriz la vamos agregando al vector, logrando el mismo objetivo.
+2. Ahora, debemos agregar los costos de cada taxi a cada pasajero, esto es lo que cambia con respecto a nuestra implementación anterior, pues antes estos costos eran simplemente las distancias, que se encuentran en la matriz, y ahora deben ser los ratios $r'$. Haremos lo mismo de aplanar la matriz, pero, al ir aplanandola añadiremos al vector no solo el valor de la distancia como haciamos antes, si no que a este le sumaremos la distancia a realizar en el viaje y a esta suma la dividimos por la tarifa a cobrar (es decir, calculamos el ratio $r'$ para cada combinacion de taxi-pasajero). De esta manera agregamos al vector $r'_{11} , r'_{12}, \cdots, r'_{nn}$.
    
-3. Finalmente, como los arcos de los pasajeros al sink tambien tienen costo 0, debemos agregar $n$ ceros mas al final del vector, para obtener nuestro vector de costos.
+3. Finalmente, como en el modelo anterior, los arcos de los pasajeros al sink tambien tienen costo 0. Por lo tanto debemos hacer lo mismo que en nuestra primera implementación, agregar $n$ ceros mas al final del vector, para obtener así nuestro vector de costos.
+
+Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del modelo alternativo.
