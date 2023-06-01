@@ -169,7 +169,7 @@ std::vector<int64_t> BatchingSolver::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
 
     supplies[0] = int64_t(n);
-    supplies[2*n+1] = int64_t(-n); // PREGUNTAR SI ES NECESARIO
+    supplies[2*n+1] = int64_t(-n);
 
     return supplies;
 }
