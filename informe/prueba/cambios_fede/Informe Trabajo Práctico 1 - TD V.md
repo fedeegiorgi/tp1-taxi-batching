@@ -226,9 +226,9 @@ A pesar de la mejora en términos de costos, al analizar el tiempo de ejecución
 
 ![Comparación de %time_gap](time_comparison.png)
 
-Por otro lado, en relación a la diferencia relativa en términos del rendimiento económico por kilómetro recorrido, encontramos resultados mixtos. En las instancias de menor tamaño (10 y 100), se observa una disminución en el rendimiento económico con la estrategia de batching. Sin embargo, en las instancias de mayor tamaño (250 y 500), se obtiene un aumento del rendimiento económico en comparación con la estrategia FCFS. Dado que el modelo de la estrategia batching tiene como función objetivo la minimización de la suma de distancias y no así el rendimiento económico de los conductores, en principio no podríamos explicar facilmente a que se deben estos resultados. De todas formas, podríamos pensar que tiene que ver con el tamaño del batch. Tal vez, ante una mayor disponibilidad de asignaciones posibles, minimizar las distancias de recogida permite una mejor distribución de los viajes y una mayor eficiencia en la distancia total recorrida por los conductores.
+Por otro lado, en relación a la diferencia relativa en términos del rendimiento económico por kilómetro recorrido, encontramos resultados mixtos. En las instancias de menor tamaño (10 y 100), se observa una disminución en el rendimiento económico con la estrategia de batching. Sin embargo, en las instancias de mayor tamaño (250 y 500), se obtiene un aumento del rendimiento económico en comparación con la estrategia FCFS. Dado que el modelo de la estrategia batching tiene como función objetivo la minimización de la suma de distancias y no así el rendimiento económico de los conductores, en principio no podríamos explicar facilmente a que se deben estos resultados. Mas adelante atacaremos este problema de estar teniendo en cuenta las distancias y no el rédito económico con nuestro modelo alternativo.
 
-En resumen, los resultados indican que la estrategia de batching proporciona mejoras significativas en términos de la distancia colectiva de recogida de pasajeros que se traducirá también en menos tiempo de espera para los pasajeros. Además, si bien los tiempos de ejecución del nuevo modelo crecen exponencialemente con el tamaño de entrada, esto no debería ser un problema si se mantienen a los batch limitados en cantidades clientes. Sin embargo, el impacto en el rendimiento económico de los conductores puede variar según el tamaño del conjunto de instancias.
+En resumen, los resultados indican que la estrategia de batching proporciona mejoras significativas en términos de la distancia colectiva de recogida de pasajeros que se traducirá también en menos tiempo de espera para los pasajeros. Además, si bien los tiempos de ejecución del nuevo modelo crecen exponencialemente con el tamaño de entrada, esto no debería ser un problema si se mantienen a los batch limitados en cantidades clientes. Sin embargo, el impacto en el rendimiento económico puede variar según el tamaño del conjunto de instancias.
 
 ### Limitaciones y posibles extensiones
 
@@ -244,6 +244,10 @@ Además, es importante resaltar que si bien estos resultados se obtuvieron utili
   
 ### Modelo para estrategia alternativa
 
-- inversión del ratio r para minimizar --> explicar 
+Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que seguimos teniendo que buscar un flujo maximo con costo minimo, antes buscabamos que se asignen $n$ taxis a $n$ pasajeros minimizando la suma de las distancias y ahora buscamos que se asignen $n$ taxis a $n$ pasajeros pero minimizando nuestro ratio $r'$. Teniendo en cuenta esto, nuestro modelo anterior, cambiando distancias por $r'$ es esencialmente lo mismo.
+
+De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo.
+
+![Modelo Alternativo](alternativo_test.png)
 
 ### Implementación para estrategia alternativa
