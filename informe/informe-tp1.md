@@ -19,7 +19,7 @@ En los últimos tiempos, el surgimiento masivo de plataformas colaborativas que 
 
 El objetivo de este trabajo es analizar un aspecto fundamental del funcionamiento de estas plataformas: la asignación en tiempo real entre pasajeros y conductores. Con el crecimiento sostenido de usuarios de estas empresas, se ha ido complejizando el desafío de lograr emparejamientos efectivos ante requerimientos de experiencia del usuario cada vez más exigentes. A través de este análisis, buscamos ofrecer recomendaciones que permitan optimizar el sistema de emparejamiento y brindar una experiencia aún más satisfactoria tanto para los pasajeros como para los conductores de la plataforma.
 
-### El problema (y la decisión a tomar)
+### El problema y la decisión a tomar
 
 El trabajo nos pone en el rol de consultores para una empresa que se dedica a dar servicios de movilidad, conectando a pasajeros con conductores. La empresa, dado un instante o intervalo pequeño de tiempo, en cierta área geográfica, tiene una cierta cantidad de pasajeros pidiendo un viaje, y otra cantidad de conductores disponibles. Nuestro objetivo es decidir, de manera inteligente, qué vehículo debe buscar a cada pasajero.
 
@@ -83,7 +83,7 @@ Con este batch podremos tomar una decisión global para el problema de asignaci�
 
 Notar que es posible que en algun momento elijamos un vehículo que no es el más cercano a un pasajero. Sin embargo, esta decisión local no optima permite aportar a la mejor decisión global para minimizar la suma de distancias. Así, esta estrategia es totalmente distinta a la estrategia *greedy* vista anteriormente.
 
-Se puede ver que $\sum{dist_{ij}}$ *en batching* $\leq \sum{dist_{ij}}$ *en greedy* ya que, si minimizamos la suma de distancias teniendo toda la información, si o si esa suma sera menor o a lo sumo igual que elegir el taxi más cercano para cada pasajero en orden mientras van llegando los pedidos de viaje (podría ser igual en el caso en el que casualmente la asignación que minimiza las distancias es la misma que la de asignarle el taxi más cercano a cada pasajero por orden de llegada).
+Se puede ver que $\sum{dist_{ij}}$ *en batching* $\leq \sum{dist_{ij}}$ *en greedy* ya que, si minimizamos la suma de distancias teniendo toda la información, efectivamente esa suma sera menor o a lo sumo igual que elegir el taxi más cercano para cada pasajero en orden mientras van llegando los pedidos de viaje (podría ser igual en el caso en el que casualmente la asignación que minimiza las distancias es la misma que la de asignarle el taxi más cercano a cada pasajero por orden de llegada).
 
 Vamos a modelar el problema de encontrar dicha asignación optima con grafos.
 
@@ -93,19 +93,15 @@ Nuestro modelo utiliza la idea de resolver matching máximo en grafos bipartitos
 
 Para construirlo, partimos de un grafo que contiene n nodos, representando a los taxis que forman nuestra particion $V_1$ y otros n nodos representando a los pasajeros que forman nuestra particion $V_2$, sabemos además que $n = \#V_1 = \#V_2$ por como se define el problema en las consignas del trabajo.
 
-![Grafo bipartito](imagenes/paso1_test.png)
-
 Posteriormente, conectamos cada nodo que representa a un taxi con los n nodos que representan a los pasajeros, representando que en principio podemos asignar cualquier taxi a cualquier pasajero. No conectamos taxis entre sí o pasajeros entre sí, por lo que nos queda un grafo bipartito.
 
-![Conexiones](imagenes/paso2_test.png)
+![Grafo bipartito completo](imagenes/paso1y2.png)
 
 Una vez obtenido el grafo es importante ver que no solo queremos realizar el matching máximo, si no que también queremos minimizar la distancia que recorren los taxis hasta recoger al pasajero. Para resolver esto, transformamos el problema de matching máximo en el grafo bipartito en un problema de flujo máximo y costo mínimo, siendo el costo que buscamos minimizar, la distancia mencionada. Para ello, debemos agregar al grafo que teniamos un nodo Source ($S$) y un nodo Sink ($T$) y asignar tanto capacidades como costos adecuados para representar nuestro problema.
 
-![Source & Sink](imagenes/paso3_test.png)
-
 Una vez agregados, conectamos $S$ con todos los taxis, dándole a cada arista capacidad 1, pues queremos que cada taxi se asigne a solo un pasajero, y costo 0, pues aún no se esta asignando ningún pasajero y no hay ninguna distancia que tomar. Luego, en las aristas que conectan a los taxis con los pasajeros, les asignamos capacidad 1, por el mismo motivo que antes y es que no queremos asignarle más de un pasajero a los taxis (aunque es verdad que al haber elegido capacidad 1 en la conexión de $S$ con los taxis, esto ya estaba limitado y podríamos elegir cualquier capacidad $\geq 1$ ), y el costo será dado por la distancia desde el taxi al pasajero, es decir, la arista que conecta al i-ésimo taxi con el j-ésimo pasajero tendra capacidad 1 y costo $dist_{ij}$. Finalmente, conectamos los pasajeros a $T$, con capacidad 1 por el mismo motivo anterior (aunque otra vez, ya estaba limitado) y costo 0, pues interpretativamente esta conexión representa que el viaje terminó y ya no hay ninguna distancia (costo) a tener en cuenta.
 
-![Conexiones S y T](imagenes/paso4_test.png)
+![Modelo estrategia Batching](imagenes/modelo_b_test.png)
 
 *No se ve representado en las lineas punteadas pues saturaría la visualización pero cada linea punteada se conecta con capacidad 1 y costo* $dist_{ij}$, al igual que en las que se ven marcadas.
 
@@ -185,15 +181,15 @@ Dado que una de las principales motivaciones de la formulación de un nuevo mode
 
 ### Experimentación
 
-Teniendo en cuenta que la implementación de la estrategia de Batching toma a las distancias de recogida como los costos a minimizar, el principal criterio a considerar será ver cómo se comparan estos costos, computados como la suma de distancias para cada instancia, entre las distintas estrategias (*columnas \<estrategia\>\_cost en el dataframe de resultados*).
+Teniendo en cuenta que la implementación de la estrategia de Batching toma a las distancias de recogida como los costos a minimizar, el principal criterio a considerar será ver cómo se comparan estos costos, computados como la suma de distancias para cada instancia, entre las distintas estrategias.
 
-En segundo lugar, además de analizar los costos, buscaremos analizar el rendimiento económico de los conductores dado un ratio de rendimiento por km recorrido (*columnas \<estrategia\>\_benefit en el dataframe de resultados*). Este ratio se define como:
+En segundo lugar, además de analizar los costos, buscaremos analizar el rendimiento económico de los conductores dado un ratio de rendimiento por km recorrido. Este ratio se define como:
 
 $$
 r = \frac{tarifa\:(\$)}{dist.\:recogida + dist.\:viaje \:(km)}
 $$
 
-Por último, tomamos el tiempo de ejecución de cada estrategia utilizando la librería std::chrono de C++ (*columnas \<estrategia\>\_time en el dataframe de resultados*).
+Por último, tomamos el tiempo de ejecución de cada estrategia utilizando la librería std::chrono de C++.
 
 Para comparar el modelo propuesto con la estrategia de Batching con la versión actual de la empresa (FCFS) definimos las siguientes métricas:
 
@@ -203,7 +199,7 @@ Para comparar el modelo propuesto con la estrategia de Batching con la versión 
 
 -   %yield_gap: diferencia porcentual relativa de la estrategia batching sobre la greedy en base al rendimiento económico de cada kilómetro recorrido por el conductor para concretar el viaje del pasajero asignado.
 
-Para la evaluación de nuestra estrategia, tenemos a disposición cuatro conjuntos de instancias de diferentes tamaños (10, 100, 250 y 500) nos permiten observar los resultados de los diferentes algoritmos con una variedad de escenarios de asignación. Cada conjunto contiene diez instancias distintas para agregar diversidad a los escenarios considerados.
+Para la evaluación de nuestra estrategia, tenemos a disposición cuatro conjuntos de instancias de diferentes tamaños (10, 100, 250 y 500) que nos permiten observar los resultados de los diferentes algoritmos con una variedad de escenarios de asignación. Cada conjunto contiene diez instancias distintas para agregar diversidad a los escenarios considerados.
 
 Las instancias fueron generadas en base a la información de los pasajeros se seleccionó al azar de los registros de viajes en taxi del área de Manhattan, Nueva York durante el mes de diciembre de 2018. Además, tanto la ubicación de los pasajeros como la de los vehículos se generaron de forma aleatoria utilizando información geoespacial sobre las zonas correspondientes.
 
@@ -234,7 +230,7 @@ Como notamos, si bien la nueva estrategia propuesta aporta al objetivo reducir l
 
 En particular, tal cual observamos, el rendimiento económico por *km* recorrido no es superior en ninguna estrategia con respecto a la otra. Muchas veces, este factor es de gran relevancia para los conductores ya que se oberva que en ocasiones se les asignan viajes que requieren recorrer distancias largas para recoger al pasajero, para luego hacer un viaje de distancia corta en comparación. Esto hace que la relación entre el beneficio (dado por la tarifa del viaje del pasajero) tenga poca relación con el costo asociado a la búsqueda de ese cliente por parte del conductor. 
 
-Además, es importante resaltar que si bien estos resultados se obtuvieron utilizando conjuntos de datos tomados de información real, la aplicabilidad de estos resultados puede variar en diferentes contextos y ubicaciones geográficas. Uno de los aspectos tal vez más relevantes que este modelo está obviando del contexto es el tráfico. 
+Además, es importante resaltar que si bien estos resultados se obtuvieron utilizando conjuntos de datos tomados de información real, la aplicabilidad de estos resultados puede variar en diferentes contextos y ubicaciones geográficas. Otro de los aspectos tal vez más relevantes que este modelo está obviando del contexto es el tráfico. Sin embargo, en este caso no contamos con información sufiente para tener este aspecto en cuenta en el modelo.
 
 ## Estrategia Alternativa
 
@@ -252,7 +248,7 @@ que en lugar de representar la cantidad de dinero por *km* recorrido, indique la
 
 Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que seguimos teniendo que buscar un flujo maximo con costo minimo, antes buscabamos que se asignen $n$ taxis a $n$ pasajeros minimizando la suma de las distancias y ahora buscamos que se asignen $n$ taxis a $n$ pasajeros pero minimizando nuestro ratio $r'$. Teniendo en cuenta esto, nuestro modelo anterior, cambiando distancias por $r'$ es esencialmente lo mismo.
 
-De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde 
+De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde:
 $$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
 
 ![Modelo Alternativo](imagenes/alternativo_test.png)
@@ -263,7 +259,7 @@ Al igual que con la estrategia de batching, realizamos una implementación de es
 
 1. Como en el anterior modelo, los arcos de source a los taxis tienen costo 0, por lo que, al igual que en la primera implementación, inicializamos el vector con $n$ ceros.
    
-2. Ahora, debemos agregar los costos de cada taxi a cada pasajero, esto es lo que cambia con respecto a nuestra implementación anterior, pues antes estos costos eran simplemente las distancias, que se encuentran en la matriz, y ahora deben ser los ratios $r'$. Utilizaremos una función similar a la anterior para aplanar la matriz, solo que esta vez, no añadiremos al vector el valor de la distancia, sino que este le sumaremos la distancia a realizar en el viaje y a esta suma la dividiremos por la tarifa a cobrar (es decir, calculamos el ratio r′ para cada combinacion de taxi-pasajero). De esta manera agregamos al vector $r'_{11} , r'_{12}, \cdots, r'_{nn}$.
+2. Ahora, debemos agregar los costos de cada taxi a cada pasajero, esto es lo que cambia con respecto a nuestra implementación anterior, pues antes estos costos eran simplemente las distancias, que se encuentran en la matriz, y ahora deben ser los ratios $r'$. Utilizaremos una función similar a la anterior para aplanar la matriz, solo que esta vez, no añadiremos al vector el valor de la distancia, sino que este le sumaremos la distancia a realizar en el viaje y a esta suma la dividiremos por la tarifa a cobrar (es decir, calculamos el ratio r' para cada combinacion de taxi-pasajero). De esta manera agregamos al vector $r'_{11} , r'_{12}, \cdots, r'_{nn}$.
    
 3. Finalmente, como en el modelo anterior, los arcos de los pasajeros al sink tambien tienen costo 0. Por lo tanto debemos hacer lo mismo que en nuestra primera implementación, agregar $n$ ceros más al final del vector, para obtener así nuestro vector de costos.
 
@@ -289,10 +285,11 @@ Métricas Alternativo vs. Batching
 | 250 |     -8.34 |      4.12 |      -6.49 |
 | 500 |     -6.98 |     11.16 |     -11.77 |
 
-![Comparación de medias de rendimiento entre las 3 estrategias](imagenes/Alternativ_1_comparison.png)
+![Comparación de medias de rendimiento entre las 3 estrategias](imagenes/alternativo1_distancias.png)
 
-Como podemos ver tanto en las tablas como en el gráfico (figura x), para nuestras instancias más grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son más constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
-Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
+Como podemos ver tanto en las tablas como en el gráfico (figura 4), para nuestras instancias más grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son más constantes. 
+
+Por otro lado, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa. Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
 
 ## Nueva estrategia alternativa
 
@@ -303,7 +300,7 @@ Notar que, mientras más chico sea $rd$, mejor para el conductor pues el ratio d
 
 ### Modelo para nueva estrategia alternativa
 
-Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando como se puede observar en la figura x0.
+Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando como se puede observar en la figura 5.
 
 ![Nuevo Modelo Alternativo](imagenes/newmodel2.png)
 
@@ -351,13 +348,13 @@ Métricas Alternativo 2 vs. Alternativo 1
 | 250 |      0.72 |     -2.43 |     -19.26 |              21.49 |
 | 500 |      0.79 |    -12.89 |     -37.99 |              32.26 |
 
-![Comparación de medias de rendimiento $/km entre las 4 estrategias](imagenes/Alternative2.png)
+![Comparación de medias de rendimiento $/km entre las 4 estrategias](imagenes/alterantive2_rendimiento_test.png)
 
-![Comparación de medias de suma de distancias de recogida entre las 4 estrategias](imagenes/comparacion_medias_distancias.png)
+![Comparación de medias de suma de distancias de recogida entre las 4 estrategias](imagenes/alternative2_distancias_test.png)
 
-![Comparación de medias de los ratios rd entre las 4 estrategias](imagenes/comparacion_medias_ratio_rd.png)
+![Comparación de medias de los ratios rd entre las 4 estrategias](imagenes/alternative2_ratiord_test.png)
 
-Viendo los gráficos (figuras x1, x2, x3, x4) podemos observar como nuestro ratio $rd$ se minimiza con este modelo, cumpliendo el objetivo de que nuestros conductores no viajen mucho para realizar un viaje corto (o al menos minimizando esos casos). 
+Viendo los gráficos (figuras 6, 7 y 8) podemos observar como nuestro ratio $rd$ se minimiza con este modelo, cumpliendo el objetivo de que nuestros conductores no viajen mucho para realizar un viaje corto (o al menos minimizando esos casos). 
 
 Además, podemos ver como, al menos con la información con la que contamos, nuestro nuevo modelo alternativo también es el que mejores rendimientos económicos nos provee. En terminos de distancias de recogida, es un intermedio entre greedy y batching, resultados muy similares a nuestro primer modelo alternativo en este sentido. 
 
