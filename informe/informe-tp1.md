@@ -248,7 +248,7 @@ que en lugar de representar la cantidad de dinero por *km* recorrido, indique la
 
 Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que seguimos teniendo que buscar un flujo maximo con costo minimo, antes buscabamos que se asignen $n$ taxis a $n$ pasajeros minimizando la suma de las distancias y ahora buscamos que se asignen $n$ taxis a $n$ pasajeros pero minimizando nuestro ratio $r'$. Teniendo en cuenta esto, nuestro modelo anterior, cambiando distancias por $r'$ es esencialmente lo mismo.
 
-De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde:
+De esta manera, llegamos al siguiente grafo (figura 3), que representa nuestro modelo alternativo, donde:
 $$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
 
 ![Modelo Alternativo](imagenes/alternativo_test.png)
