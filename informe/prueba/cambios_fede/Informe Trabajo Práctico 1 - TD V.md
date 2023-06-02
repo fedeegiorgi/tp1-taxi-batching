@@ -270,25 +270,35 @@ Al igual que con la estrategia de batching, realizamos una implementación de es
 
 Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del modelo alternativo.
 
-## Resultados y conclusiones
+### Experimentación con nuestro modelo alternativo
+tabla vs greedy
+tabla vs batching
+grafico
 
-|   n |   greedy_cost |   greedy_time |   greedy_benefit |
-|----:|--------------:|--------------:|-----------------:|
-|  10 |         46.93 |     0.0010935 |          1.99407 |
-| 100 |        337.31 |     0.0676419 |          2.83544 |
-| 250 |        849.6  |     0.309526  |          3.08986 |
-| 500 |       1553.29 |     1.50738   |          3.68816 |
+Como podemos ver tanto en las tablas como en el gráfico, para nuestras instancias mas grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son mas constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
+Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
 
-|   n |   batching_cost |   batching_time |   batching_benefit |
-|----:|----------------:|----------------:|-------------------:|
-|  10 |           40.06 |        0.043584 |            2.23441 |
-| 100 |          280.63 |        2.90137  |            2.93713 |
-| 250 |          701.6  |       17.8831   |            3.03359 |
-| 500 |         1326.82 |      104.629    |            3.01076 |
+## Nueva estrategia alternativa
+Nuestra nueva estrategia ataca otro problema que no habíamos tenido en cuenta y es que es muy probable que los conductores no quieran realizar un tramo de distancia muy larga para ir a recoger un pasajero que realizará un viaje mucho mas corto que $dist_{ij}$. 
+Para mitigar esto mismo, vamos a definir un nuevo ratio, $$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$.
+Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio disminuye cuando o bien la distancia para recoger al pasajero es chica o cuando la distancia del viaje a ser realizado es grande. Esto es importante a la hora de definir nuestro modelo y luego implementación.
 
-|   n |   alternative_cost |   alternative_time |   alternative_benefit |
-|----:|-------------------:|-------------------:|----------------------:|
-|  10 |              41.33 |          0.0287216 |               2.26612 |
-| 100 |             304.8  |          2.41201   |               3.0802  |
-| 250 |             759.62 |         16.4397    |               3.19421 |
-| 500 |            1418.98 |         87.265     |               3.35431 |
+### Modelo para nueva estrategia alternativa
+Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando de la siguiente manera:
+![Nuevo Modelo Alternativo](newmodel2.png)
+
+### Implementacion para nueva estrategia alternativa
+Como ya vimos en los modelos anteriores, necesitamos 5 vectores para resolver el problema de flujo máximo, costo mínimo con "or-tools".
+El unico vector que es distinto que el de los modelos anteriores es el de "cost_units", veamos como construirlo.
+
+1. Como en los otros modelos, los arcos de source a los taxis tienen costo 0, por lo que, al igual que en la primera implementación, inicializamos el vector con $n$ ceros.
+   
+2. Ahora, debemos agregar los costos de cada taxi a cada pasajero, que paso de ser, en el caso de batching las distancias, y en el otro modelo alternativo $r'$ a ser nuestro nuevo ratio $rd$. Haremos lo mismo de ir aplanando la matriz pero, a la hora de agregar elementos al vector, además dividiremos por la distancia del viaje, agregando así $rd_{11} , rd_{12}, \cdots, rd_{nn}$.
+   
+3. Finalmente, como en los otros modelos, los arcos de los pasajeros al sink tambien tienen costo 0. Por lo tanto debemos hacer lo mismo que en nuestra primera implementación, agregar $n$ ceros mas al final del vector, para obtener así nuestro vector de costos.
+
+Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del nuevo modelo alternativo.
+
+### Discusión y análisis de resultados
+
+## Conclusión
