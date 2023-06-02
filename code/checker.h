@@ -18,7 +18,8 @@ class TaxiAssignmentChecker
         double getSolutionCost(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
         double getSolutionBenefit(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
         double getSolutionBenefit_2(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
-	
+	double getAvgRelativeDistance(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution);
+
 	private:
         int n_constraints = 3;
         std::vector<bool> _feasibility_status;
