@@ -46,18 +46,6 @@ void BatchingSolver_v2::solve() {
     std::chrono::duration<double> duration = end - start;
     
     this->_solution_time = duration.count() * 1000;
-
-    // prints de chequeo
-
-    // std::cout << this->_start_nodes.size() << std::endl;
-    // std::cout << this->_end_nodes.size() << std::endl;
-    // std::cout << this->_capacities.size() << std::endl;
-    // std::cout << this->_unit_costs.size() << std::endl;
-
-    // printVector(_start_nodes);
-    // printVector(_end_nodes);
-    // printVector(_capacities);
-    // printVector(_unit_costs);
 }
 
 double BatchingSolver_v2::getObjectiveValue() const {
