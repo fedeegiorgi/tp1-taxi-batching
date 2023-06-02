@@ -297,17 +297,20 @@ Como podemos ver tanto en las tablas como en el gráfico, para nuestras instanci
 Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
 
 ## Nueva estrategia alternativa
+
 Nuestra nueva estrategia ataca otro problema que no habíamos tenido en cuenta y es que es muy probable que los conductores no quieran realizar un tramo de distancia muy larga para ir a recoger un pasajero que realizará un viaje mucho mas corto que $dist_{ij}$. 
 Para mitigar esto mismo, vamos a definir un nuevo ratio, 
 $$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$
 Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio disminuye cuando o bien la distancia para recoger al pasajero es chica o cuando la distancia del viaje a ser realizado es grande. Esto es importante a la hora de definir nuestro modelo y luego implementación.
 
 ### Modelo para nueva estrategia alternativa
+
 Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando de la siguiente manera:
 
 ![Nuevo Modelo Alternativo](newmodel2.png)
 
 ### Implementacion para nueva estrategia alternativa
+
 Como ya vimos en los modelos anteriores, necesitamos 5 vectores para resolver el problema de flujo máximo, costo mínimo con "or-tools".
 El unico vector que es distinto que el de los modelos anteriores es el de "cost_units", veamos como construirlo.
 
@@ -320,6 +323,8 @@ El unico vector que es distinto que el de los modelos anteriores es el de "cost_
 Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del nuevo modelo alternativo.
 
 ### Discusión y análisis de resultados
+
+Comparamos nuestro alternativo 2 a los otros modelos como habíamos hecho antes pero agregamos una nueva métrica, nombre_metrica%, que representa el promedio de gaps en el nuevo ratio $rd$.
 
 Métricas Alternativo 2 vs. Greedy
 
@@ -338,6 +343,7 @@ Métricas Alternativo 2 vs. Alternativo 1
 ## Conclusión
 
 ## Aclaraciones
+
 - En el dataset hay tarifas negativas y tarifas que son 0. Las tarifas negativas consideramos que eran un typo y les aplicamos valor absoluto. Aquellas tarifas que eran 0 las cambiamos por 1 aplicando una especie de "tarifa mínima", pues no tiene sentido "regalar un viaje" y en nuestro primer intento de modelo alternativo, estaba causando que dividamos por 0.
 - Cuando calculamos los rendimientos economicos (con la solucion ya dada), si por algun motivo el denominador daba 0 (es decir, tanto distancia de recogida como distancia del viaje = 0) no los tomamos en cuenta para el analisis a la hora de calcular los promedios (variable casos_anomalos en el código).
 - En las imagenes del modelo y la explicación, muchas veces nos referimos tanto a los taxis como a los pasajeros del 1 al n (por ejemplo, en el modelo de batching la distancia del taxi 1 al pasajero 1 esta expresada como $d_{11}$). En el código necesitabamos que no se repitan los "nombres" de los nodos, por lo que los taxis estan numerados del 1 al n y los pasajeros del n+1 al 2n pero en esencia el pasajero n+1 es lo que muchas veces llamamos el pasajero 1.
