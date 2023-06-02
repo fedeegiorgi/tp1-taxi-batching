@@ -321,6 +321,35 @@ Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resol
 
 ### Discusión y análisis de resultados
 
+Métricas Alternativo 2 vs. Greedy
+
+|   n | cost_gap% | time_gap% | yield_gap% |
+|-----|-----------|-----------|------------|
+|  10 |     10.23 |  -2794.35 |     -22.41 |
+| 100 |      8.55 |  -7669.98 |     -25.71 |
+| 250 |     11.12 |  -5423.75 |     -23.03 |
+| 500 |      9.34 |  -4860.75 |     -26.39 |
+
+Métricas Alternativo 2 vs. Batching
+
+|   n | cost_gap% | time_gap% | yield_gap% |
+|-----|-----------|-----------|------------|
+|  10 |     -5.21 |     21.01 |      -8.33 |
+| 100 |    -10.13 |    -32.83 |     -21.36 |
+| 250 |     -7.55 |      7.21 |     -26.29 |
+| 500 |     -6.14 |     -2.46 |     -54.09 |
+
+Métricas Alternativo 2 vs. Alternativo 1
+
+|   n | cost_gap% | time_gap% | yield_gap% |
+|-----|-----------|-----------|------------|
+|  10 |     -1.78 |    -13.74 |      -6.77 |
+| 100 |     -1.05 |    -71.65 |     -15.83 |
+| 250 |      0.72 |     -2.43 |     -19.26 |
+| 500 |      0.79 |    -12.89 |     -37.99 |
+
+![Comparación de medias de rendimiento entre las 4 estrategias](Alternative2.png)
+
 ## Conclusión
 
 ## Aclaraciones
