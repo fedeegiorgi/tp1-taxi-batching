@@ -328,17 +328,36 @@ Comparamos nuestro alternativo 2 a los otros modelos como habíamos hecho antes 
 
 Métricas Alternativo 2 vs. Greedy
 
-
+|   n | cost_gap% | time_gap% | yield_gap% | relative_dist_gap% |
+|-----|-----------|-----------|------------|--------------------|
+|  10 |     10.23 |  -2794.35 |     -22.41 |              42.55 |
+| 100 |      8.55 |  -7669.98 |     -25.71 |              60.16 |
+| 250 |     11.12 |  -5423.75 |     -23.03 |              65.98 |
+| 500 |      9.34 |  -4860.75 |     -26.39 |              65.14 |
 
 Métricas Alternativo 2 vs. Batching
 
-
+|   n | cost_gap% | time_gap% | yield_gap% | relative_dist_gap% |
+|-----|-----------|-----------|------------|--------------------|
+|  10 |     -5.21 |     21.01 |      -8.33 |              30.26 |
+| 100 |    -10.13 |    -32.83 |     -21.36 |              51.73 |
+| 250 |     -7.55 |      7.21 |     -26.29 |              56.55 |
+| 500 |     -6.14 |     -2.46 |     -54.09 |              61.98 |
 
 Métricas Alternativo 2 vs. Alternativo 1
 
+|   n | cost_gap% | time_gap% | yield_gap% | relative_dist_gap% |
+|---- |-----------|-----------|------------|--------------------|
+|  10 |     -1.78 |    -13.74 |      -6.77 |               4.89 |
+| 100 |     -1.05 |    -71.65 |     -15.83 |              24.89 |
+| 250 |      0.72 |     -2.43 |     -19.26 |              21.49 |
+| 500 |      0.79 |    -12.89 |     -37.99 |              32.26 |
 
+![Comparación de medias de rendimiento $/km entre las 4 estrategias](Alternative2.png)
 
-![Comparación de medias de rendimiento entre las 4 estrategias](Alternative2.png)
+![Comparación de medias de suma de distancias de recogida entre las 4 estrategias](comparacion_medias_distancias.png)
+
+![Comparación de medias de los ratios rd entre las 4 estrategias](comparacion_medias_ratio_rd.png)
 
 ## Conclusión
 
