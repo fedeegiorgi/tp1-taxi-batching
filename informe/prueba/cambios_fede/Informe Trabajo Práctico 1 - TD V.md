@@ -302,3 +302,8 @@ Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resol
 ### Discusión y análisis de resultados
 
 ## Conclusión
+
+## Aclaraciones
+- En el dataset hay tarifas negativas y tarifas que son 0. Las tarifas negativas consideramos que eran un typo y les aplicamos valor absoluto. Aquellas tarifas que eran 0 las cambiamos por 1 aplicando una especie de "tarifa mínima", pues no tiene sentido "regalar un viaje" y en nuestro primer intento de modelo alternativo, estaba causando que dividamos por 0.
+- Cuando calculamos los rendimientos economicos (con la solucion ya dada), si por algun motivo el denominador daba 0 (es decir, tanto distancia de recogida como distancia del viaje = 0) no los tomamos en cuenta para el analisis a la hora de calcular los promedios (variable casos_anomalos en el código).
+- En las imagenes del modelo y la explicación, muchas veces nos referimos tanto a los taxis como a los pasajeros del 1 al n (por ejemplo, en el modelo de batching la distancia del taxi 1 al pasajero 1 esta expresada como $d_{11}$). En el código necesitabamos que no se repitan los "nombres" de los nodos, por lo que los taxis estan numerados del 1 al n y los pasajeros del n+1 al 2n pero en esencia el pasajero n+1 es lo que muchas veces llamamos el pasajero 1.
