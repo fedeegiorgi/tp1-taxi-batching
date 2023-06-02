@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
                            batching_3_checker.getSolutionCost(instance, batching_3_solver.getSolution()), batching_3_solver.getSolutionTime(), batching_3_checker.getAvgRelativeDistance(instance, batching_3_solver.getSolution()),batching_3_checker.getSolutionBenefit(instance, batching_3_solver.getSolution())});
     }
 
-    // obtención de los resultados para los tamaños de muestra n = 100.
+    // Obtención de los resultados para los tamaños de muestra n = 100.
     for (int i = 0; i < 10; i++) {
         std::string filename = "input/medium_" + std::to_string(i) + ".csv";
         TaxiAssignmentInstance instance(filename);
@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
                            batching_3_checker.getSolutionCost(instance, batching_3_solver.getSolution()), batching_3_solver.getSolutionTime(), batching_3_checker.getAvgRelativeDistance(instance, batching_3_solver.getSolution()),batching_3_checker.getSolutionBenefit(instance, batching_3_solver.getSolution())});
     }
 
-    // obtención de los resultados para los tamaños de muestra n = 250.
+    // Obtención de los resultados para los tamaños de muestra n = 250.
     for (int i = 0; i < 10; i++) {
         std::string filename = "input/large_" + std::to_string(i) + ".csv";
         TaxiAssignmentInstance instance(filename);
@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
                            batching_3_checker.getSolutionCost(instance, batching_3_solver.getSolution()), batching_3_solver.getSolutionTime(), batching_3_checker.getAvgRelativeDistance(instance, batching_3_solver.getSolution()),batching_3_checker.getSolutionBenefit(instance, batching_3_solver.getSolution())});
     }
 
-    // obtención de los resultados para los tamaños de muestra n = 500.
+    // Obtención de los resultados para los tamaños de muestra n = 500.
     for (int i = 0; i < 10; i++) {
         std::string filename = "input/xl_" + std::to_string(i) + ".csv";
         TaxiAssignmentInstance instance(filename);
