@@ -40,7 +40,6 @@ void TaxiAssignmentInstance::ReadFromFile(std::string filename) {
 
         // Assign the latlong
         this->taxi_position[i] = std::make_pair<double, double>(std::stod(elems[0]), std::stod(elems[1]));
-        //std::cout << this->taxi_position[i].first << " " << this->taxi_position[i].second << std::endl;
     }
 
     // Read passenger information.

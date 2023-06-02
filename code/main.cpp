@@ -10,12 +10,10 @@
 #include <fstream>
 #include <vector>
 
-// ObjectiveValue para estrategia Greedy y Batching es la suma de la distancias para recoger a los pasajeros.
-// ObjectiveValue para estrategia alternativa de Batching es las sumas de los ratios de la forma: (dist. recogida + dist. viaje) / tarifa total
-
-// strategy_cost = suma de la distancias para recoger a los pasajeros.
-// strategy_time = tiempo de ejecución de la asignación.
-// strategy_benefit = promedio de los rendimientos económicos sobre distancia recorrida de los vehiculos.
+// <strategy>_cost = suma de la distancias para recoger a los pasajeros.
+// <strategy>_time = tiempo de ejecución de la asignación.
+// <strategy>_relative_dist = promedio de la relación entre distancia de recogida y del viaje para cada asignación de la instancia.
+// <strategy>_benefit = promedio de los rendimientos económicos sobre distancia recorrida de los vehiculos.
 
 struct Result {
     int n;
@@ -49,7 +47,7 @@ void exportToCSV(const std::vector<Result>& results, const std::string& filename
     // Seteamos los headers para las columnas
     file << "n,greedy_cost,greedy_time,greedy_relative_dist,greedy_benefit,batching_cost,batching_time,batching_relative_dist,batching_benefit,alternative_cost,alternative_time,alternative_relative_dist,alternative_benefit,alternative2_cost,alternative2_time,alternative2_relative_dist,alternative2_benefit\n";
 
-    // Escrimos el resultado para una asignación dada.
+    // Escribimos el resultado para una asignación dada.
     for (const auto& result : results) {
         file << result.n << "," << result.greedy_cost << "," << result.greedy_time << "," << result.greedy_relative_dist << "," << result.greedy_benefit << ","
              << result.batching_cost << "," << result.batching_time << "," << result.batching_relative_dist << "," << result.batching_benefit << ","
