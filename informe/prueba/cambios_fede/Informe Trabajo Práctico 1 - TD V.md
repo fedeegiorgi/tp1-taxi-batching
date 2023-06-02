@@ -254,7 +254,8 @@ que en vez de representar la cantidad de dinero por *km* recorrido, indique la c
 
 Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que seguimos teniendo que buscar un flujo maximo con costo minimo, antes buscabamos que se asignen $n$ taxis a $n$ pasajeros minimizando la suma de las distancias y ahora buscamos que se asignen $n$ taxis a $n$ pasajeros pero minimizando nuestro ratio $r'$. Teniendo en cuenta esto, nuestro modelo anterior, cambiando distancias por $r'$ es esencialmente lo mismo.
 
-De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde $$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
+De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde 
+$$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
 
 ![Modelo Alternativo](alternativo_test.png)
 
@@ -271,20 +272,39 @@ Al igual que con la estrategia de batching, realizamos una implementación de es
 Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resolver el problema de flujo máximo con costo mínimo y así completar nuestra implementación del modelo alternativo.
 
 ### Experimentación con nuestro modelo alternativo
-tabla vs greedy
-tabla vs batching
-grafico
+
+Métricas Alternativo vs. Greedy
+
+|   n | cost_gap% | time_gap% | yield_gap% |
+|-----|-----------|-----------|------------|
+|  10 |     11.76 |  -2328.29 |     -14.45 |
+| 100 |      9.49 |  -5839.61 |      -8.68 |
+| 250 |     10.46 |  -5187.87 |      -4.64 |
+| 500 |      8.62 |  -5106.64 |       7.2  |
+
+Métricas Alternativo vs. Batcching
+
+|   n | cost_gap% | time_gap% | yield_gap% |
+|-----|-----------|-----------|------------|
+|  10 |     -3.45 |     27.91 |      -1.78 |
+| 100 |     -8.99 |     -5.34 |      -5.99 |
+| 250 |     -8.34 |      4.12 |      -6.49 |
+| 500 |     -6.98 |     11.16 |     -11.77 |
+
+![Comparación de medias de rendimiento entre las 3 estrategias](Alternativ_1_comparison.png)
 
 Como podemos ver tanto en las tablas como en el gráfico, para nuestras instancias mas grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son mas constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
 Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
 
 ## Nueva estrategia alternativa
 Nuestra nueva estrategia ataca otro problema que no habíamos tenido en cuenta y es que es muy probable que los conductores no quieran realizar un tramo de distancia muy larga para ir a recoger un pasajero que realizará un viaje mucho mas corto que $dist_{ij}$. 
-Para mitigar esto mismo, vamos a definir un nuevo ratio, $$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$.
+Para mitigar esto mismo, vamos a definir un nuevo ratio, 
+$$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$.
 Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio disminuye cuando o bien la distancia para recoger al pasajero es chica o cuando la distancia del viaje a ser realizado es grande. Esto es importante a la hora de definir nuestro modelo y luego implementación.
 
 ### Modelo para nueva estrategia alternativa
 Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando de la siguiente manera:
+
 ![Nuevo Modelo Alternativo](newmodel2.png)
 
 ### Implementacion para nueva estrategia alternativa

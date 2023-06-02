@@ -13,7 +13,7 @@ bool TaxiAssignmentChecker::checkFeasibility(const TaxiAssignmentInstance &insta
 
 double TaxiAssignmentChecker::getSolutionBenefit(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution) {
     double ret = 0.0;
-    int casos_anomalos;
+    int casos_anomalos = 0;
     for (int i = 0; i < instance.n; i++) {
         int j = solution.getAssignedPax(i)-1; // -1 pues estan numerados del 1 al 10 para que no se confunda en batching con 0 que es el nodo source.
         double rendm_km = instance.pax_tot_fare[j] / (instance.pax_trip_dist[j] + instance.dist[i][j]); // ratio rendimiento para el pasajero j y el i-esimo taxi
@@ -25,7 +25,7 @@ double TaxiAssignmentChecker::getSolutionBenefit(const TaxiAssignmentInstance &i
         }
     }
 
-    return ret/instance.n; // promedio del rendimiento global dada la asignación de n pasajeros y n taxis
+    return ret/(instance.n - casos_anomalos); // promedio del rendimiento global dada la asignación de n pasajeros y n taxis
 }
 
 double TaxiAssignmentChecker::getSolutionBenefit_2(const TaxiAssignmentInstance &instance, const TaxiAssignmentSolution &solution) {

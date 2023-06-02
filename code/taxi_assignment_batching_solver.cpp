@@ -136,7 +136,7 @@ std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
 }
 
 std::vector<int64_t> BatchingSolver::_set_capacities(int n) {
-    std::vector<int64_t> ret = std::vector<int64_t>((2*n+n*n), 1) 
+    std::vector<int64_t> ret = std::vector<int64_t>((2*n+n*n), 1);
     // Todas las capacidades son 1, inicializo un vector con 2n + n^2 (cantidad de arcos) unos.
     return ret;
 }
