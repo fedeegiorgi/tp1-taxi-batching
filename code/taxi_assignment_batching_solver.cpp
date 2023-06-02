@@ -78,15 +78,16 @@ double BatchingSolver::getSolutionTime() const {
 
 void BatchingSolver::_create_network(TaxiAssignmentInstance &instance) {
     int n = instance.n;
-    
+
+    // Creamos los vectores que representan las conexiones entre nodos (arcos), sus capacidades y sus costos.
     this->_start_nodes = _set_start_nodes(instance.n);
     this->_end_nodes = _set_end_nodes(instance.n);
     this->_capacities = _set_capacities(instance.n);
     this->_unit_costs = _set_costs(instance.dist, instance.n);
 
-    this->_source = 0;
-    this->_sink = 2 * instance.n + 1;
-    this->_supplies = _set_supplies(instance.n);
+    this->_source = 0; // Numeramos al nodo Source como 0.
+    this->_sink = 2 * instance.n + 1; // Numeramos al nodo sink como 2n+1.
+    this->_supplies = _set_supplies(instance.n); // Creamos el vector de imbalances.
 
     // Añadimos cada arco.
     for (int i = 0; i < this->_start_nodes.size(); ++i) {
@@ -102,19 +103,19 @@ void BatchingSolver::_create_network(TaxiAssignmentInstance &instance) {
 std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
     std::vector<int64_t> ret;
     
-    // Seteamos 0s para arcos de source a taxis
+    // Seteamos 0s para arcos de source a taxis.
     for (int i = 0; i < n; i++) {
         ret.push_back(0);
     }
 
-    // Seteamos start_nodes de cada taxi a cada pax
+    // Seteamos start_nodes de cada taxi a cada pax, es decir, agregamos (n 1_s, n 2_s, ... n n_s).
     for (int64_t i = 1; i < n+1; i++) {
         for (int j = 0; j < n; j++) {
             ret.push_back(i);
         }
     }
 
-    // Seteamos start_nodes de cada pax a sink t 
+    // Seteamos start_nodes de cada pax a sink t, es decir, una vez cada pasajero (n+1, n+2, ..., 2n).
     for (int64_t i = n+1; i < 2*n+1; i++) {
         ret.push_back(i);
     }
@@ -125,15 +126,18 @@ std::vector<int64_t> BatchingSolver::_set_start_nodes(int n) {
 std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
     std::vector<int64_t> ret;
 
+    // Cerramos las conexiones de source a taxis, es decir, una vez cada taxi (1, 2, ..., n).
     for(int64_t i = 1; i < n+1; i++){
         ret.push_back(i);
     }
 
+    // Cerramos las conexiones de los taxis a los pasajeros, es decir, agregamos n veces la secuencia (n+1, n+2, ..., 2n).
     for(int i = n+1; i < 2*n+1; i++){
         for(int64_t j = 0; j < n; j++)
             ret.push_back(n+1+j);
     }
 
+    // Cerramos las conexiones de cada pasajero a sink, es decir, agregamos n veces 2n+1 (sink).
     for(int i = 0; i < n; i++){
         ret.push_back(2*n+1);
     }
@@ -142,35 +146,34 @@ std::vector<int64_t> BatchingSolver::_set_end_nodes(int n) {
 }
 
 std::vector<int64_t> BatchingSolver::_set_capacities(int n) {
-    std::vector<int64_t> ret;
-
-    for (int i = 0; i < (2*n+n*n); i++){
-        ret.push_back(1);
-    }
-
+    std::vector<int64_t> ret = std::vector<int64_t>((2*n+n*n), 1) 
+    // Todas las capacidades son 1, inicializo un vector con 2n + n^2 (cantidad de arcos) unos.
     return ret;
 }
 
 std::vector<int64_t> BatchingSolver::_set_costs(std::vector<std::vector<double>> matrix, int n) {
-    std::vector<int64_t> flattened = std::vector<int64_t>(n, 0);
+    std::vector<int64_t> flattened = std::vector<int64_t>(n, 0); // Inicializo un vector con n ceros pues las conexiones de source a los taxis tienen costo 0.
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
-            flattened.push_back(int64_t(matrix[fila][index]*10)); // multiplicación por 10 para que sea entero
+            flattened.push_back(int64_t(matrix[fila][index]*10)); // Multiplicación por 10 para que los costos sean enteros.
         }
     }
+    // Agrego a ese vector todos los costos (dist_ij), aplanando la matriz y agregando al vector a medida que lo hago.
+
     for (int j = 0; j < n; j++){
         flattened.push_back(0);
     }
+    // Agrego n ceros mas, pues las conexiones de los pasajeros a sink tienen costo 0.
     return flattened;
 }
 
 std::vector<int64_t> BatchingSolver::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
-
-    supplies[0] = int64_t(n);
-    supplies[2*n+1] = int64_t(-n);
-
+    // Inicializo un vector de todos 0s que representa los imbalances.
+    supplies[0] = int64_t(n); // Al nodo source le asigno n como imbalance.
+    supplies[2*n+1] = int64_t(-n); // Al nodo sink le asigno -n como imbalance.
+    // Ver informe para entender el porque.
     return supplies;
 }
 

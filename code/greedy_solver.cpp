@@ -9,7 +9,7 @@ GreedySolver::GreedySolver(TaxiAssignmentInstance &instance) {
     this->_solution_status = 0;
     this->_solution_time = 0;
 
-    // Inicializamos un objeto soluciòn que luego serà modificado por el mètodo "solve" al momento de resolver el problema para la instancia dada.
+    // Inicializamos un objeto solución que luego será modificado por el método "solve" al momento de resolver el problema para la instancia dada.
     this->_solution = TaxiAssignmentSolution(this->_instance.n); 
 }
 
@@ -50,19 +50,19 @@ void GreedySolver::solve() {
 }
 
 double GreedySolver::getObjectiveValue() const {
-    return this->_objective_value;
+    return this->_objective_value; // Devolvemos el objective value construido en el solve.
 }
 
 TaxiAssignmentSolution GreedySolver::getSolution() const {
-    return this->_solution;
+    return this->_solution; // Devolvemos la solucion construida en el solve.
 }
 
 int GreedySolver::getSolutionStatus() const {
-    return this->_solution_status;
+    return this->_solution_status; // Devolvemos el estado de la instancia, 1 si fue resuelta, 0 si no.
 }
 
 double GreedySolver::getSolutionTime() const {
-    return this->_solution_time;
+    return this->_solution_time; // Devolvemos el tiempo que tardo en correrse el solve.
 }
 
 
