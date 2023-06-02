@@ -1,8 +1,8 @@
-#include "batching_solver_v2.h"
+#include "batching_solver_v3.h"
 
-BatchingSolver_v2::BatchingSolver_v2() {}
+BatchingSolver_v3::BatchingSolver_v3() {}
 
-BatchingSolver_v2::BatchingSolver_v2(TaxiAssignmentInstance &instance) {
+BatchingSolver_v3::BatchingSolver_v3(TaxiAssignmentInstance &instance) {
     this->_instance = instance;
     this->_objective_value = 0;
     this->_solution_status = 0;
@@ -12,11 +12,11 @@ BatchingSolver_v2::BatchingSolver_v2(TaxiAssignmentInstance &instance) {
     _create_network(instance);
 }
 
-void BatchingSolver_v2::setInstance(TaxiAssignmentInstance &instance) {
+void BatchingSolver_v3::setInstance(TaxiAssignmentInstance &instance) {
     this->_instance = instance;
 }
 
-void BatchingSolver_v2::solve() {
+void BatchingSolver_v3::solve() {
 
     // Inicializamos timer.
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
@@ -60,23 +60,23 @@ void BatchingSolver_v2::solve() {
     // printVector(_unit_costs);
 }
 
-double BatchingSolver_v2::getObjectiveValue() const {
+double BatchingSolver_v3::getObjectiveValue() const {
     return this->_objective_value;
 }
 
-TaxiAssignmentSolution BatchingSolver_v2::getSolution() const {
+TaxiAssignmentSolution BatchingSolver_v3::getSolution() const {
     return this->_solution;
 }
 
-int BatchingSolver_v2::getSolutionStatus() const {
+int BatchingSolver_v3::getSolutionStatus() const {
     return this->_solution_status;
 }
 
-double BatchingSolver_v2::getSolutionTime() const {
+double BatchingSolver_v3::getSolutionTime() const {
     return this->_solution_time;
 }
 
-void BatchingSolver_v2::_create_network(TaxiAssignmentInstance &instance) {
+void BatchingSolver_v3::_create_network(TaxiAssignmentInstance &instance) {
     int n = instance.n;
     
     this->_start_nodes = _set_start_nodes(instance.n);
@@ -99,7 +99,7 @@ void BatchingSolver_v2::_create_network(TaxiAssignmentInstance &instance) {
     }
 }
 
-std::vector<int64_t> BatchingSolver_v2::_set_start_nodes(int n) {
+std::vector<int64_t> BatchingSolver_v3::_set_start_nodes(int n) {
     std::vector<int64_t> ret;
     
     // seteo 0s para arcos de source a taxis
@@ -122,7 +122,7 @@ std::vector<int64_t> BatchingSolver_v2::_set_start_nodes(int n) {
     return ret;
 }
 
-std::vector<int64_t> BatchingSolver_v2::_set_end_nodes(int n) {
+std::vector<int64_t> BatchingSolver_v3::_set_end_nodes(int n) {
     std::vector<int64_t> ret;
 
     for(int i = 1; i < n+1; i++){
@@ -141,7 +141,7 @@ std::vector<int64_t> BatchingSolver_v2::_set_end_nodes(int n) {
     return ret;
 }
 
-std::vector<int64_t> BatchingSolver_v2::_set_capacities(int n) {
+std::vector<int64_t> BatchingSolver_v3::_set_capacities(int n) {
     std::vector<int64_t> ret;
 
     for (int i = 0; i < (2*n+n*n); i++){
@@ -151,18 +151,18 @@ std::vector<int64_t> BatchingSolver_v2::_set_capacities(int n) {
     return ret;
 }
 
-std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<double>> matrix, int n) {
+std::vector<int64_t> BatchingSolver_v3::_set_costs(std::vector<std::vector<double>> matrix, int n) {
     std::vector<int64_t> flattened = std::vector<int64_t>(n, 0);
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
             int costo;
-            if (this->_instance.pax_trip_dist[index] < 0) {
-                costo = (matrix[fila][index] / abs(this->_instance.pax_trip_dist[index])) * 10;
-            } else if (this->_instance.pax_trip_dist[index] == 0) {
-                costo = (matrix[fila][index] / 1) * 10;
+            if (this->_instance.pax_tot_fare[index] < 0) {
+                costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / (this->_instance.pax_tot_fare[index]*-1);
+            } else if (this->_instance.pax_tot_fare[index] == 0) {
+                costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / 1;
             } else {
-                costo = (matrix[fila][index] / this->_instance.pax_trip_dist[index]) * 10;
+                costo = (matrix[fila][index]*10 + this->_instance.pax_trip_dist[index]*10) / this->_instance.pax_tot_fare[index];
             }
             
             flattened.push_back(costo);
@@ -174,7 +174,7 @@ std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<doubl
     return flattened;
 }
 
-std::vector<int64_t> BatchingSolver_v2::_set_supplies(int n) {
+std::vector<int64_t> BatchingSolver_v3::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
 
     supplies[0] = n;
@@ -184,7 +184,7 @@ std::vector<int64_t> BatchingSolver_v2::_set_supplies(int n) {
 }
 
 // para debugging --------------------------------------------------------------------------------------
-void BatchingSolver_v2::printVector(const std::vector<int64_t>& vec) {
+void BatchingSolver_v3::printVector(const std::vector<int64_t>& vec) {
     std::cout << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         std::cout << vec[i];
