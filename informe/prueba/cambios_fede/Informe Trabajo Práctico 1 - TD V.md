@@ -282,7 +282,7 @@ Métricas Alternativo vs. Greedy
 | 250 |     10.46 |  -5187.87 |      -4.64 |
 | 500 |      8.62 |  -5106.64 |       7.2  |
 
-Métricas Alternativo vs. Batcching
+Métricas Alternativo vs. Batching
 
 |   n | cost_gap% | time_gap% | yield_gap% |
 |-----|-----------|-----------|------------|
@@ -299,7 +299,7 @@ Sin embargo, no nos convence del todo, por lo que definimos otra alternativa pos
 ## Nueva estrategia alternativa
 Nuestra nueva estrategia ataca otro problema que no habíamos tenido en cuenta y es que es muy probable que los conductores no quieran realizar un tramo de distancia muy larga para ir a recoger un pasajero que realizará un viaje mucho mas corto que $dist_{ij}$. 
 Para mitigar esto mismo, vamos a definir un nuevo ratio, 
-$$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$.
+$$ rd = \frac{dist.\:recogida\:(km)}{dist.\:viaje \:(km)} $$
 Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio disminuye cuando o bien la distancia para recoger al pasajero es chica o cuando la distancia del viaje a ser realizado es grande. Esto es importante a la hora de definir nuestro modelo y luego implementación.
 
 ### Modelo para nueva estrategia alternativa
@@ -323,30 +323,15 @@ Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resol
 
 Métricas Alternativo 2 vs. Greedy
 
-|   n | cost_gap% | time_gap% | yield_gap% |
-|-----|-----------|-----------|------------|
-|  10 |     10.23 |  -2794.35 |     -22.41 |
-| 100 |      8.55 |  -7669.98 |     -25.71 |
-| 250 |     11.12 |  -5423.75 |     -23.03 |
-| 500 |      9.34 |  -4860.75 |     -26.39 |
+
 
 Métricas Alternativo 2 vs. Batching
 
-|   n | cost_gap% | time_gap% | yield_gap% |
-|-----|-----------|-----------|------------|
-|  10 |     -5.21 |     21.01 |      -8.33 |
-| 100 |    -10.13 |    -32.83 |     -21.36 |
-| 250 |     -7.55 |      7.21 |     -26.29 |
-| 500 |     -6.14 |     -2.46 |     -54.09 |
+
 
 Métricas Alternativo 2 vs. Alternativo 1
 
-|   n | cost_gap% | time_gap% | yield_gap% |
-|-----|-----------|-----------|------------|
-|  10 |     -1.78 |    -13.74 |      -6.77 |
-| 100 |     -1.05 |    -71.65 |     -15.83 |
-| 250 |      0.72 |     -2.43 |     -19.26 |
-| 500 |      0.79 |    -12.89 |     -37.99 |
+
 
 ![Comparación de medias de rendimiento entre las 4 estrategias](Alternative2.png)
 
