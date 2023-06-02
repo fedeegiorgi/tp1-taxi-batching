@@ -93,19 +93,19 @@ Nuestro modelo utiliza la idea de resolver matching máximo en grafos bipartitos
 
 Para construirlo, partimos de un grafo que contiene n nodos, representando a los taxis que forman nuestra particion $V_1$ y otros n nodos representando a los pasajeros que forman nuestra particion $V_2$, sabemos además que $n = \#V_1 = \#V_2$ por como se define el problema en las consignas del trabajo.
 
-![Grafo bipartito](paso1_test.png)
+![Grafo bipartito](imagenes/paso1_test.png)
 
 Posteriormente, conectamos cada nodo que representa a un taxi con los n nodos que representan a los pasajeros, representando que en principio podemos asignar cualquier taxi a cualquier pasajero. No conectamos taxis entre sí o pasajeros entre sí, por lo que nos queda un grafo bipartito.
 
-![Conexiones](paso2_test.png)
+![Conexiones](imagenes/paso2_test.png)
 
 Una vez obtenido el grafo es importante ver que no solo queremos realizar el matching máximo, si no que también queremos minimizar la distancia que recorren los taxis hasta recoger al pasajero. Para resolver esto, transformamos el problema de matching máximo en el grafo bipartito en un problema de flujo máximo y costo mínimo, siendo el costo que buscamos minimizar, la distancia mencionada. Para ello, debemos agregar al grafo que teniamos un nodo Source ($S$) y un nodo Sink ($T$) y asignar tanto capacidades como costos adecuados para representar nuestro problema.
 
-![Source & Sink](paso3_test.png)
+![Source & Sink](imagenes/paso3_test.png)
 
 Una vez agregados, conectamos $S$ con todos los taxis, dándole a cada arista capacidad 1, pues queremos que cada taxi se asigne a solo un pasajero, y costo 0, pues aún no se esta asignando ningún pasajero y no hay ninguna distancia que tomar. Luego, en las aristas que conectan a los taxis con los pasajeros, les asignamos capacidad 1, por el mismo motivo que antes y es que no queremos asignarle mas de un pasajero a los taxis (aunque es verdad que al haber elegido capacidad 1 en la conexión de $S$ con los taxis, esto ya estaba limitado y podríamos elegir cualquier capacidad $\geq 1$ ), y el costo será dado por la distancia desde el taxi al pasajero, es decir, la arista que conecta al i-ésimo taxi con el j-ésimo pasajero tendra capacidad 1 y costo $dist_{ij}$. Finalmente, conectamos los pasajeros a $T$, con capacidad 1 por el mismo motivo anterior (aunque otra vez, ya estaba limitado) y costo 0, pues interpretativamente esta conexión representa que el viaje terminó y ya no hay ninguna distancia (costo) a tener en cuenta.
 
-![Conexiones S y T](paso4_test.png)
+![Conexiones S y T](imagenes/paso4_test.png)
 
 *No se ve representado en las lineas punteadas pues saturaría la visualización pero cada linea punteada se conecta con capacidad 1 y costo* $dist_{ij}$, al igual que en las que se ven marcadas.
 
@@ -255,7 +255,7 @@ Adaptar nuestro modelo original a la nueva estrategia es sencillo, puesto a que 
 De esta manera, llegamos al siguiente grafo, que representa nuestro modelo alternativo, donde 
 $$ r'_{ij} = \frac{dist_{ij} + dist.viaje_{j}} {tarifa.viaje_{j}} $$
 
-![Modelo Alternativo](alternativo_test.png)
+![Modelo Alternativo](imagenes/alternativo_test.png)
 
 ### Implementación para estrategia alternativa
 
@@ -289,7 +289,7 @@ Métricas Alternativo vs. Batching
 | 250 |     -8.34 |      4.12 |      -6.49 |
 | 500 |     -6.98 |     11.16 |     -11.77 |
 
-![Comparación de medias de rendimiento entre las 3 estrategias](Alternativ_1_comparison.png)
+![Comparación de medias de rendimiento entre las 3 estrategias](imagenes/Alternativ_1_comparison.png)
 
 Como podemos ver tanto en las tablas como en el gráfico (figura x), para nuestras instancias mas grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son mas constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
 Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
@@ -305,7 +305,7 @@ Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio di
 
 Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando como se puede observar en la figura x0.
 
-![Nuevo Modelo Alternativo](newmodel2.png)
+![Nuevo Modelo Alternativo](imagenes/newmodel2.png)
 
 ### Implementacion para nueva estrategia alternativa
 
@@ -351,11 +351,11 @@ Métricas Alternativo 2 vs. Alternativo 1
 | 250 |      0.72 |     -2.43 |     -19.26 |              21.49 |
 | 500 |      0.79 |    -12.89 |     -37.99 |              32.26 |
 
-![Comparación de medias de rendimiento $/km entre las 4 estrategias](Alternative2.png)
+![Comparación de medias de rendimiento $/km entre las 4 estrategias](imagenes/Alternative2.png)
 
-![Comparación de medias de suma de distancias de recogida entre las 4 estrategias](comparacion_medias_distancias.png)
+![Comparación de medias de suma de distancias de recogida entre las 4 estrategias](imagenes/comparacion_medias_distancias.png)
 
-![Comparación de medias de los ratios rd entre las 4 estrategias](comparacion_medias_ratio_rd.png)
+![Comparación de medias de los ratios rd entre las 4 estrategias](imagenes/comparacion_medias_ratio_rd.png)
 
 Viendo los gráficos (figuras x1, x2, x3, x4) podemos observar como nuestro ratio $rd$ se minimiza con este modelo, cumpliendo el objetivo de que nuestros conductores no viajen mucho para realizar un viaje corto (o al menos minimizando esos casos). 
 
