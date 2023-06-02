@@ -24,40 +24,30 @@ void BatchingSolver::solve() {
 
     this->_solution_status = this->_min_cost_flow.Solve();
     this->_objective_value = this->_min_cost_flow.OptimalCost();
-    
+    // Resolvemos el problema de flujo maximo con costo minimo utilizando or-tools.
+
     if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
         for (std::size_t i = 0; i < this->_min_cost_flow.NumArcs(); ++i) {
-            // Can ignore arcs leading out of source or into sink.
+            // Podemos ignorar los arcos que salen de source o los que entran a sink pues solo queremos agregar a nuestra solucion las asignaciones que resuelven el problema.
             if (this->_min_cost_flow.Tail(i) != this->_source && this->_min_cost_flow.Head(i) != this->_sink) {
-                // Arcs in the solution have a flow value of 1. Their start and end
-                // nodes give an assignment of worker to task.
+                // Los arcos en la solucion tienen un valor de flujo = 1. 
+                // Sus nodos de inicio y final son una asignacion taxi -> pasajero.
                 if (this->_min_cost_flow.Flow(i) > 0) {
                     this->_solution.assign(this->_min_cost_flow.Tail(i)-1, this->_min_cost_flow.Head(i) - this->_solution.getN()-1);
-                }
+                } // Agarramos el inicio y final de cada arco y nos guardamos dicha asignacion en la solucion.
             }
         }
     } else {
-        LOG(INFO) << "Solving the min cost flow problem failed.";
-        LOG(INFO) << "Solver status: " << this->_solution_status;
+        LOG(INFO) << "La resolucion del problema de maximo flujo con costo minimo falló.";
+        LOG(INFO) << "Codigo de error: " << this->_solution_status;
     }
 
     // Frenamos timer.
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     
-    this->_solution_time = duration.count() * 1000;
-
-    // prints de chequeo
-
-    // std::cout << this->_start_nodes.size() << std::endl;
-    // std::cout << this->_end_nodes.size() << std::endl;
-    // std::cout << this->_capacities.size() << std::endl;
-    // std::cout << this->_unit_costs.size() << std::endl;
-
-    // printVector(_start_nodes);
-    // printVector(_end_nodes);
-    // printVector(_capacities);
-    // printVector(_unit_costs);
+    this->_solution_time = duration.count() * 1000; 
+    // El tiempo de chrono viene por default en segundos. Pasamos a ms pues son unidades chicas de tiempo.
 }
 
 double BatchingSolver::getObjectiveValue() const {
