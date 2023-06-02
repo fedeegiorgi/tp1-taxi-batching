@@ -222,13 +222,11 @@ Estos resultados basados en las métricas definidas anteriormente nos permiten e
 
 En cuanto a los costos, observamos que para todas las instancias evaluadas se obtiene una mejora significativa en torno al 15%, lo que indica una reducción en los costos totales al asignar los vehículos con las estrategia de batching. Se puede notar que las mejoras relativas varían dependiendo de los tamaños de las instancias entre un 14.57% y un 17.32%. Notando los resultados podríamos inferir que ya cuando se experimenta con un matching entre 500 conductores y 500 pasajeros, la mejora del nuevo algoritmo con respecto al actual comienza disminuir. Sin embargo, considerando que los "batch" se encontrarán acotados la mejora es consistente con el objetivo de resolución del problema propuesto.
 
-A pesar de la mejora en términos de costos, al analizar el tiempo de ejecución se observa que los resultados muestran un %time_gap negativo en todas las instancias evaluadas. Esto indica que el tiempo de ejecución de la estrategia de batching es mayor en comparación con la estrategia FCFS. Los porcentajes son considerablemente altos y varían entre -4005.53% y -6527.45%, lo que demuestra un empeoramiento significativo en la eficiencia del proceso de asignación al utilizar la estrategia de batching en lugar de la estrategia FCFS. A continuación en la Figura 5, se puede apreciar como el tiempo de ejecución de la nueva estrategia crece considerablemente más rápido a medida que aumenta el tamaño de la muestra a diferencia de la versión actual. Sin embargo, siguen siendo tiempos de ejecución casi imperceptibles.
+A pesar de la mejora en términos de costos, al analizar el tiempo de ejecución se observa que los resultados muestran un %time_gap negativo en todas las instancias evaluadas. Esto indica que el tiempo de ejecución de la estrategia de batching es mayor en comparación con la estrategia FCFS. Los porcentajes son considerablemente altos y varían entre -4005.53% y -6527.45%, lo que demuestra un empeoramiento significativo en la eficiencia del proceso de asignación al utilizar la estrategia de batching en lugar de la estrategia FCFS.
 
-![Comparación de %time_gap](time_comparison.png)
+Por otro lado, en relación a la diferencia relativa en términos del rendimiento económico por kilómetro recorrido, encontramos resultados mixtos. En las instancias de menor tamaño (10 y 100), se observa una disminución en el rendimiento económico con la estrategia de batching. Sin embargo, en las instancias de mayor tamaño (250 y 500), se obtiene un aumento del rendimiento económico en comparación con la estrategia FCFS. Dado que el modelo de la estrategia batching tiene como función objetivo la minimización de la suma de distancias y no así el rendimiento económico de los conductores, en principio no podríamos explicar facilmente a que se deben estos resultados. Mas adelante atacaremos este problema de estar teniendo en cuenta las distancias y no el rédito económico con nuestro modelo primer alternativo.
 
-Por otro lado, en relación a la diferencia relativa en términos del rendimiento económico por kilómetro recorrido, encontramos resultados mixtos. En las instancias de menor tamaño (10 y 100), se observa una disminución en el rendimiento económico con la estrategia de batching. Sin embargo, en las instancias de mayor tamaño (250 y 500), se obtiene un aumento del rendimiento económico en comparación con la estrategia FCFS. Dado que el modelo de la estrategia batching tiene como función objetivo la minimización de la suma de distancias y no así el rendimiento económico de los conductores, en principio no podríamos explicar facilmente a que se deben estos resultados. Mas adelante atacaremos este problema de estar teniendo en cuenta las distancias y no el rédito económico con nuestro modelo alternativo.
-
-En resumen, los resultados indican que la estrategia de batching proporciona mejoras significativas en términos de la distancia colectiva de recogida de pasajeros que se traducirá también en menos tiempo de espera para los pasajeros. Además, si bien los tiempos de ejecución del nuevo modelo crecen exponencialemente con el tamaño de entrada, esto no debería ser un problema si se mantienen a los batch limitados en cantidades clientes. Sin embargo, el impacto en el rendimiento económico puede variar según el tamaño del conjunto de instancias.
+En resumen, los resultados indican que la estrategia de batching proporciona mejoras significativas en términos de la distancia colectiva de recogida de pasajeros que se traducirá también en menos tiempo de espera para los pasajeros, pues a pesar de haber un gran diferencial en el tiempo de ejecución, el mismo no es muy grande, el amplio % se explica por que greedy es muy rapido en terminos de ejecución.
 
 ### Limitaciones y posibles extensiones
 
@@ -293,7 +291,7 @@ Métricas Alternativo vs. Batching
 
 ![Comparación de medias de rendimiento entre las 3 estrategias](Alternativ_1_comparison.png)
 
-Como podemos ver tanto en las tablas como en el gráfico, para nuestras instancias mas grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son mas constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
+Como podemos ver tanto en las tablas como en el gráfico (figura x), para nuestras instancias mas grandes, el modelo greedy es el que mayor beneficio economico nos provee. Esto era algo que no esperabamos ver. Sin embargo, es importante tener en cuenta que el modelo greedy depende mucho del orden en el que se realizan los viajes (básicamente, del azar), mientras que tanto el modelo de batching como nuestro modelo alternativo son mas constantes. Podemos observar que, comparando con batching, nuestro rédito económico en el modelo alternativo es siempre mejor, y no depende del azar como greedy, por lo que es un modelo que sería inteligente adoptar para la empresa.
 Sin embargo, no nos convence del todo, por lo que definimos otra alternativa posible que analizaremos a continuación.
 
 ## Nueva estrategia alternativa
@@ -305,7 +303,7 @@ Notar que, mientras mas chico sea $rd$, mejor para el conductor pues el ratio di
 
 ### Modelo para nueva estrategia alternativa
 
-Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando de la siguiente manera:
+Nuestro modelo será prácticamente idéntico a los anteriores, con el mismo grafo, pero cambiando los costos de los arcos que conectan taxis y pasajeros por $rd_{ij} = \frac{dist_{ij}}{dist.viaje_{j}}$, quedando como se puede observar en la figura x0.
 
 ![Nuevo Modelo Alternativo](newmodel2.png)
 
@@ -324,7 +322,7 @@ Con esto terminamos de crear los 5 vectores requeridos por "or-tools" para resol
 
 ### Discusión y análisis de resultados
 
-Comparamos nuestro alternativo 2 a los otros modelos como habíamos hecho antes pero agregamos una nueva métrica, nombre_metrica%, que representa el promedio de gaps en el nuevo ratio $rd$.
+Comparamos nuestro alternativo 2 a los otros modelos como habíamos hecho antes pero agregamos una nueva métrica, relative_dist_gap%, que representa el promedio de gaps en el nuevo ratio $rd$.
 
 Métricas Alternativo 2 vs. Greedy
 
@@ -359,10 +357,26 @@ Métricas Alternativo 2 vs. Alternativo 1
 
 ![Comparación de medias de los ratios rd entre las 4 estrategias](comparacion_medias_ratio_rd.png)
 
+Viendo los gráficos (figuras x1, x2, x3, x4) podemos observar como nuestro ratio $rd$ se minimiza con este modelo, cumpliendo el objetivo de que nuestros conductores no viajen mucho para realizar un viaje corto (o al menos minimizando esos casos). 
+
+Además, podemos ver como, al menos con la información con la que contamos, nuestro nuevo modelo alternativo también es el que mejores rendimientos económicos nos provee. En terminos de distancias de recogida, es un intermedio entre greedy y batching, resultados muy similares a nuestro primer modelo alternativo en este sentido. 
+
+Por último, analizando los tiempos de ejecución que podemos ver en las tablas, nuestro modelo alternativo tarda bastante mas que greedy, al igual que batching y el primer modelo que habíamos propuesto, lo cual es lógico ya que todos se basan en la misma idea. 
+Comparar entre ellos no tiene mucho sentido ya que las diferencias no son muy grandes y probablemente tengan que ver con irregularidades a la hora de correr el código (por ejemplo, si había algun navegador abierto al momento de correr un código y para el otro no), pues la implementación en los tres casos es muy similar. 
+
+En cuanto a la diferencia con *greedy*, si bien la diferencia es muy grande, el tiempo de cómputo necesario para instancias grandes como $n = 500$ es del orden de aproximadamente 90ms, despreciable en nuestro contexto pues tan poco tiempo no hará la diferencia para una persona pidiendo un taxi.
+
 ## Conclusión
+A lo largo de este informe, se han planteado distintas estrategias y junto a ellas modelos e implementaciones para resolver el problema de asignar vehículos a cada pasajero.
+
+Con la información con la que contamos, nuestra experimentación sobre la misma con los distintos modelos y el análisis realizado, podemos ver como nuestro segundo modelo alternativo nos provee mejor rédito económico, asi como de cierto modo hace mas felices a los conductores, minimizando los viajes indeseados para ellos, a cambio de que la suma de distancias de recogida sea un poco mayor que en *batching* y un tiempo de ejecución, aunque completamente asumible incluso para instancias grandes, bastante mayor que con la estrategia *greedy*.
+
+Teniendo en cuenta todo esto, consideramos que el modelo que debería aplicar la empresa para la cual realizamos la consultoría debería ser este último.
 
 ## Aclaraciones
 
-- En el dataset hay tarifas negativas y tarifas que son 0. Las tarifas negativas consideramos que eran un typo y les aplicamos valor absoluto. Aquellas tarifas que eran 0 las cambiamos por 1 aplicando una especie de "tarifa mínima", pues no tiene sentido "regalar un viaje" y en nuestro primer intento de modelo alternativo, estaba causando que dividamos por 0.
-- Cuando calculamos los rendimientos economicos (con la solucion ya dada), si por algun motivo el denominador daba 0 (es decir, tanto distancia de recogida como distancia del viaje = 0) no los tomamos en cuenta para el analisis a la hora de calcular los promedios (variable casos_anomalos en el código).
-- En las imagenes del modelo y la explicación, muchas veces nos referimos tanto a los taxis como a los pasajeros del 1 al n (por ejemplo, en el modelo de batching la distancia del taxi 1 al pasajero 1 esta expresada como $d_{11}$). En el código necesitabamos que no se repitan los "nombres" de los nodos, por lo que los taxis estan numerados del 1 al n y los pasajeros del n+1 al 2n pero en esencia el pasajero n+1 es lo que muchas veces llamamos el pasajero 1.
+En el dataset hay tarifas negativas y tarifas que son 0. Las tarifas negativas consideramos que eran un typo y les aplicamos valor absoluto. Aquellas tarifas que eran 0 las cambiamos por 1 aplicando una especie de "tarifa mínima", pues no tiene sentido "regalar un viaje" y en nuestro primer intento de modelo alternativo, estaba causando que dividamos por 0.
+
+Cuando calculamos los rendimientos economicos (con la solucion ya dada), si por algun motivo el denominador daba 0 (es decir, tanto distancia de recogida como distancia del viaje = 0) no los tomamos en cuenta para el analisis a la hora de calcular los promedios (variable casos_anomalos en el código).
+
+En las imagenes del modelo y la explicación, muchas veces nos referimos tanto a los taxis como a los pasajeros del 1 al n (por ejemplo, en el modelo de batching la distancia del taxi 1 al pasajero 1 esta expresada como $d_{11}$). En el código necesitabamos que no se repitan los "nombres" de los nodos, por lo que los taxis estan numerados del 1 al n y los pasajeros del n+1 al 2n pero en esencia el pasajero n+1 es lo que muchas veces llamamos el pasajero 1.
