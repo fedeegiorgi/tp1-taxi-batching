@@ -17,7 +17,7 @@ double TaxiAssignmentChecker::getSolutionBenefit(const TaxiAssignmentInstance &i
     for (int i = 0; i < instance.n; i++) {
         int j = solution.getAssignedPax(i)-1; // -1 pues estan numerados del 1 al 10 para que no se confunda en batching con 0 que es el nodo source.
         double rendm_km = instance.pax_tot_fare[j] / (instance.pax_trip_dist[j] + instance.dist[i][j]); // Ratio rendimiento para el pasajero j y el i-esimo taxi
-        // Si el rendimiento da infinito es porque el denominador da 0 pues dist_ij = 0 y trip_j = 0, no suma al promedio
+        // Si el rendimiento da infinito es porque el denominador da 0 pues dist_ij = 0 y trip_j = 0, no suma al promedio.
         if (rendm_km > 3000) {
             casos_anomalos += 1;
         } else {

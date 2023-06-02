@@ -24,21 +24,22 @@ void BatchingSolver_v2::solve() {
 
     this->_solution_status = this->_min_cost_flow.Solve();
     this->_objective_value = this->_min_cost_flow.OptimalCost();
-    
+    // Resolvemos el problema de flujo maximo con costo minimo utilizando or-tools.
+
     if (this->_solution_status == operations_research::MinCostFlow::OPTIMAL) {
         for (std::size_t i = 0; i < this->_min_cost_flow.NumArcs(); ++i) {
-            // Can ignore arcs leading out of source or into sink.
+            // Podemos ignorar los arcos que salen de source o los que entran a sink pues solo queremos agregar a nuestra solucion las asignaciones que resuelven el problema.
             if (this->_min_cost_flow.Tail(i) != this->_source && this->_min_cost_flow.Head(i) != this->_sink) {
-                // Arcs in the solution have a flow value of 1. Their start and end
-                // nodes give an assignment of worker to task.
+                // Los arcos en la solucion tienen un valor de flujo = 1. 
+                // Sus nodos de inicio y final son una asignacion taxi -> pasajero.
                 if (this->_min_cost_flow.Flow(i) > 0) {
                     this->_solution.assign(this->_min_cost_flow.Tail(i)-1, this->_min_cost_flow.Head(i) - this->_solution.getN()-1);
-                }
+                } // Agarramos el inicio y final de cada arco y nos guardamos dicha asignacion en la solucion.
             }
         }
     } else {
-        LOG(INFO) << "Solving the min cost flow problem failed.";
-        LOG(INFO) << "Solver status: " << this->_solution_status;
+        LOG(INFO) << "La resolucion del problema de maximo flujo con costo minimo falló.";
+        LOG(INFO) << "Codigo de error: " << this->_solution_status;
     }
 
     // Frenamos timer.
@@ -46,6 +47,7 @@ void BatchingSolver_v2::solve() {
     std::chrono::duration<double> duration = end - start;
     
     this->_solution_time = duration.count() * 1000;
+    // El tiempo de chrono viene por default en segundos. Pasamos a ms pues son unidades chicas de tiempo.
 }
 
 double BatchingSolver_v2::getObjectiveValue() const {
@@ -66,22 +68,23 @@ double BatchingSolver_v2::getSolutionTime() const {
 
 void BatchingSolver_v2::_create_network(TaxiAssignmentInstance &instance) {
     int n = instance.n;
-    
+
+    // Creamos los vectores que representan las conexiones entre nodos (arcos), sus capacidades y sus costos.
     this->_start_nodes = _set_start_nodes(instance.n);
     this->_end_nodes = _set_end_nodes(instance.n);
     this->_capacities = _set_capacities(instance.n);
     this->_unit_costs = _set_costs(instance.dist, instance.n);
 
-    this->_source = 0;
-    this->_sink = 2 * instance.n + 1;
-    this->_supplies = _set_supplies(instance.n);
+    this->_source = 0; // Numeramos al nodo Source como 0.
+    this->_sink = 2 * instance.n + 1; // Numeramos al nodo sink como 2n+1.
+    this->_supplies = _set_supplies(instance.n); // Creamos el vector de imbalances.
 
-    // Add each arc.
+    // Añadimos cada arco.
     for (int i = 0; i < this->_start_nodes.size(); ++i) {
         int arc = this->_min_cost_flow.AddArcWithCapacityAndUnitCost(this->_start_nodes[i], this->_end_nodes[i], this->_capacities[i], this->_unit_costs[i]);
     }
 
-    // Add node supplies.
+    // Añadimos los imbalances a los nodos.
     for (int i = 0; i < this->_supplies.size(); ++i) {
         this->_min_cost_flow.SetNodeSupply(i, this->_supplies[i]);
     }
@@ -90,20 +93,20 @@ void BatchingSolver_v2::_create_network(TaxiAssignmentInstance &instance) {
 std::vector<int64_t> BatchingSolver_v2::_set_start_nodes(int n) {
     std::vector<int64_t> ret;
     
-    // seteo 0s para arcos de source a taxis
+    // Seteamos 0s para arcos de source a taxis.
     for (int i = 0; i < n; i++) {
         ret.push_back(0);
     }
 
-    // seteo start nodes de cada taxi a cada pax
-    for (int i = 1; i < n+1; i++) {
+    // Seteamos start_nodes de cada taxi a cada pax, es decir, agregamos (n 1_s, n 2_s, ... n n_s).
+    for (int64_t i = 1; i < n+1; i++) {
         for (int j = 0; j < n; j++) {
             ret.push_back(i);
         }
     }
 
-    // seteo start nodes 
-    for (int i = n+1; i < 2*n+1; i++) {
+    // Seteamos start_nodes de cada pax a sink t, es decir, una vez cada pasajero (n+1, n+2, ..., 2n).
+    for (int64_t i = n+1; i < 2*n+1; i++) {
         ret.push_back(i);
     }
 
@@ -113,15 +116,18 @@ std::vector<int64_t> BatchingSolver_v2::_set_start_nodes(int n) {
 std::vector<int64_t> BatchingSolver_v2::_set_end_nodes(int n) {
     std::vector<int64_t> ret;
 
-    for(int i = 1; i < n+1; i++){
+    // Cerramos las conexiones de source a taxis, es decir, una vez cada taxi (1, 2, ..., n).
+    for(int64_t i = 1; i < n+1; i++){
         ret.push_back(i);
     }
 
+    // Cerramos las conexiones de los taxis a los pasajeros, es decir, agregamos n veces la secuencia (n+1, n+2, ..., 2n).
     for(int i = n+1; i < 2*n+1; i++){
-        for(int j = 0; j < n; j++)
+        for(int64_t j = 0; j < n; j++)
             ret.push_back(n+1+j);
     }
 
+    // Cerramos las conexiones de cada pasajero a sink, es decir, agregamos n veces 2n+1 (sink).
     for(int i = 0; i < n; i++){
         ret.push_back(2*n+1);
     }
@@ -130,44 +136,41 @@ std::vector<int64_t> BatchingSolver_v2::_set_end_nodes(int n) {
 }
 
 std::vector<int64_t> BatchingSolver_v2::_set_capacities(int n) {
-    std::vector<int64_t> ret;
-
-    for (int i = 0; i < (2*n+n*n); i++){
-        ret.push_back(1);
-    }
-
+    std::vector<int64_t> ret = std::vector<int64_t>((2*n+n*n), 1);
+    // Todas las capacidades son 1, inicializo un vector con 2n + n^2 (cantidad de arcos) unos.
     return ret;
 }
 
 std::vector<int64_t> BatchingSolver_v2::_set_costs(std::vector<std::vector<double>> matrix, int n) {
-    std::vector<int64_t> flattened = std::vector<int64_t>(n, 0);
+    std::vector<int64_t> flattened = std::vector<int64_t>(n, 0); // Inicializo un vector con n ceros pues las conexiones de source a los taxis tienen costo 0.
     for (int fila = 0; fila < n; fila++){
         int index = 0;
         for (index; index < n; index++){
             int costo;
             if (this->_instance.pax_trip_dist[index] < 0) {
-                costo = (matrix[fila][index] / abs(this->_instance.pax_trip_dist[index])) * 10;
+                costo = (matrix[fila][index] / abs(this->_instance.pax_trip_dist[index])) * 10; // Multiplicación por 10 para que los costos sean enteros.
             } else if (this->_instance.pax_trip_dist[index] == 0) {
-                costo = (matrix[fila][index] / 1) * 10;
+                costo = (matrix[fila][index] / 1) * 10; // Multiplicación por 10 para que los costos sean enteros.
             } else {
-                costo = (matrix[fila][index] / this->_instance.pax_trip_dist[index]) * 10;
+                costo = (matrix[fila][index] / this->_instance.pax_trip_dist[index]) * 10; // Multiplicación por 10 para que los costos sean enteros.
             }
-            
+            // Agrego a ese vector todos los costos (dist_ij / dist.viaje_j), dividiendo a cada dist_ij por la distancia del viaje j y agregando al vector a medida que lo hago.
             flattened.push_back(costo);
-        }
+        } // Ver aclaraciones del informe para mayor comprension de los ifs.
     }
     for (int j = 0; j < n; j++){
         flattened.push_back(0);
     }
+    // Agrego n ceros mas, pues las conexiones de los pasajeros a sink tienen costo 0.
     return flattened;
 }
 
 std::vector<int64_t> BatchingSolver_v2::_set_supplies(int n) {
     std::vector<int64_t> supplies = std::vector<int64_t>((2*n+2), 0);
-
-    supplies[0] = n;
-    supplies[2*n+1] = -n;
-
+    // Inicializo un vector de todos 0s que representa los imbalances.
+    supplies[0] = int64_t(n); // Al nodo source le asigno n como imbalance.
+    supplies[2*n+1] = int64_t(-n); // Al nodo sink le asigno -n como imbalance.
+    // Ver informe para entender el porque.
     return supplies;
 }
 
